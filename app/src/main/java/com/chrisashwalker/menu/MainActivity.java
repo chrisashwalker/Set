@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    ArrayList<Card> deck = new ArrayList<Card>();
-    ArrayList<Card> hand = new ArrayList<Card>();
-    ArrayList<Card> ohand = new ArrayList<Card>();
+    ArrayList<Card> deck = new ArrayList<>();
+    ArrayList<Card> hand = new ArrayList<>();
+    ArrayList<Card> ohand = new ArrayList<>();
 
     Card card1 = new Card("01", "A", 1);
     Card card2 = new Card("02", "B", 1);
@@ -249,35 +249,35 @@ public class MainActivity extends AppCompatActivity {
     public void confirmCards(View view) {
         TextView confirm = findViewById(R.id.confirm);
         confirm.setVisibility(View.GONE);
-        TextView xcard1 = findViewById(R.id.ocard1);
+        TextView xcard1 = findViewById(R.id.opcard1);
         String oc1 = ohand.get(0).id + " : " + ohand.get(0).type + " : " + ohand.get(0).value;
         xcard1.setText(oc1);
         xcard1.setVisibility(View.VISIBLE);
-        TextView xcard2 = findViewById(R.id.ocard2);
+        TextView xcard2 = findViewById(R.id.opcard2);
         String oc2 = ohand.get(1).id + " : " + ohand.get(1).type + " : " + ohand.get(1).value;
         xcard2.setText(oc2);
         xcard2.setVisibility(View.VISIBLE);
-        TextView xcard3 = findViewById(R.id.ocard3);
+        TextView xcard3 = findViewById(R.id.opcard3);
         String oc3 = ohand.get(2).id + " : " + ohand.get(2).type + " : " + ohand.get(2).value;
         xcard3.setText(oc3);
         xcard3.setVisibility(View.VISIBLE);
-        TextView xcard4 = findViewById(R.id.ocard4);
+        TextView xcard4 = findViewById(R.id.opcard4);
         String oc4 = ohand.get(3).id + " : " + ohand.get(3).type + " : " + ohand.get(3).value;
         xcard4.setText(oc4);
         xcard4.setVisibility(View.VISIBLE);
-        TextView xcard5 = findViewById(R.id.ocard5);
+        TextView xcard5 = findViewById(R.id.opcard5);
         String oc5 = ohand.get(4).id + " : " + ohand.get(4).type + " : " + ohand.get(4).value;
         xcard5.setText(oc5);
         xcard5.setVisibility(View.VISIBLE);
-        TextView xcard6 = findViewById(R.id.ocard6);
+        TextView xcard6 = findViewById(R.id.opcard6);
         String oc6 = ohand.get(5).id + " : " + ohand.get(5).type + " : " + ohand.get(5).value;
         xcard6.setText(oc6);
         xcard6.setVisibility(View.VISIBLE);
-        TextView xcard7 = findViewById(R.id.ocard7);
+        TextView xcard7 = findViewById(R.id.opcard7);
         String oc7 = ohand.get(6).id + " : " + ohand.get(6).type + " : " + ohand.get(6).value;
         xcard7.setText(oc7);
         xcard7.setVisibility(View.VISIBLE);
-        TextView xcard8 = findViewById(R.id.ocard8);
+        TextView xcard8 = findViewById(R.id.opcard8);
         String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
         xcard8.setText(oc8);
         xcard8.setVisibility(View.VISIBLE);
