@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Menu</string>
+    <string name="start">Touch to start</string>
+    <string name="click">click</string>
+    <string name="okay">okay</string>
+    <string name="confirm">confirm</string>
+</resources>
