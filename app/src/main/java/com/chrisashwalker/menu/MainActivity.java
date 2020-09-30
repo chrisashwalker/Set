@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,52 +17,232 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public static class Card {
+        String id;
+        String type;
+        int value;
+
+        public Card(String i, String t, int v) {
+            id = i;
+            type = t;
+            value = v;
+        }
+    }
+
+    ArrayList<Card> deck = new ArrayList<Card>();
+    ArrayList<Card> hand = new ArrayList<Card>();
+    ArrayList<Card> ohand = new ArrayList<Card>();
+
+    Card card1 = new Card("01", "A", 1);
+    Card card2 = new Card("02", "B", 1);
+    Card card3 = new Card("03", "C", 1);
+    Card card4 = new Card("04", "D", 1);
+    Card card5 = new Card("05", "E", 1);
+    Card card6 = new Card("06", "F", 1);
+    Card card7 = new Card("07", "G", 1);
+    Card card8 = new Card("08", "H", 1);
+    Card card9 = new Card("09", "A", 2);
+    Card card10 = new Card("10", "B", 2);
+    Card card11 = new Card("11", "C", 2);
+    Card card12 = new Card("12", "D", 2);
+    Card card13 = new Card("13", "E", 2);
+    Card card14 = new Card("14", "F", 2);
+    Card card15 = new Card("15", "G", 2);
+    Card card16 = new Card("16", "H", 2);
+    Card card17 = new Card("17", "A", 3);
+    Card card18 = new Card("18", "B", 3);
+    Card card19 = new Card("19", "C", 3);
+    Card card20 = new Card("20", "D", 3);
+    Card card21 = new Card("21", "E", 3);
+    Card card22 = new Card("22", "F", 3);
+    Card card23 = new Card("23", "G", 3);
+    Card card24 = new Card("24", "H", 3);
+
+    public void addCards() {
+        deck.add(card1);
+        deck.add(card2);
+        deck.add(card3);
+        deck.add(card4);
+        deck.add(card5);
+        deck.add(card6);
+        deck.add(card7);
+        deck.add(card8);
+        deck.add(card9);
+        deck.add(card10);
+        deck.add(card11);
+        deck.add(card12);
+        deck.add(card13);
+        deck.add(card14);
+        deck.add(card15);
+        deck.add(card16);
+        deck.add(card17);
+        deck.add(card18);
+        deck.add(card19);
+        deck.add(card20);
+        deck.add(card21);
+        deck.add(card22);
+        deck.add(card23);
+        deck.add(card24);
+    }
+
+    public void drawCards() {
+        for (int j = 0; j < 8; j++) {
+            Random rdm = new Random();
+            int rdmint = rdm.nextInt(deck.size());
+            hand.add(deck.get(rdmint));
+            deck.remove(rdmint);
+        }
+        for (int k = 0; k < 8; k++) {
+            Random rdm2 = new Random();
+            int rdmint2 = rdm2.nextInt(deck.size());
+            ohand.add(deck.get(rdmint2));
+            deck.remove(rdmint2);
+        }
+        TextView vcard1 = findViewById(R.id.card1);
+        String c1 = hand.get(0).id + " : " + hand.get(0).type + " : " + hand.get(0).value;
+        vcard1.setText(c1);
+        TextView vcard2 = findViewById(R.id.card2);
+        String c2 = hand.get(1).id + " : " + hand.get(1).type + " : " + hand.get(1).value;
+        vcard2.setText(c2);
+        TextView vcard3 = findViewById(R.id.card3);
+        String c3 = hand.get(2).id + " : " + hand.get(2).type + " : " + hand.get(2).value;
+        vcard3.setText(c3);
+        TextView vcard4 = findViewById(R.id.card4);
+        String c4 = hand.get(3).id + " : " + hand.get(3).type + " : " + hand.get(3).value;
+        vcard4.setText(c4);
+        TextView vcard5 = findViewById(R.id.card5);
+        String c5 = hand.get(4).id + " : " + hand.get(4).type + " : " + hand.get(4).value;
+        vcard5.setText(c5);
+        TextView vcard6 = findViewById(R.id.card6);
+        String c6 = hand.get(5).id + " : " + hand.get(5).type + " : " + hand.get(5).value;
+        vcard6.setText(c6);
+        TextView vcard7 = findViewById(R.id.card7);
+        String c7 = hand.get(6).id + " : " + hand.get(6).type + " : " + hand.get(6).value;
+        vcard7.setText(c7);
+        TextView vcard8 = findViewById(R.id.card8);
+        String c8 = hand.get(7).id + " : " + hand.get(7).type + " : " + hand.get(7).value;
+        vcard8.setText(c8);
+    }
+
     public void playGame(View view) {
         setContentView(R.layout.activity_play);
+        addCards();
+        drawCards();
     }
 
     public String chooseValue() {
         Random rnd = new Random();
-        return Integer.toString(rnd.nextInt(9) + 1);
+        int rndint = rnd.nextInt(deck.size());
+        String returning = deck.get(rndint).id + " : " + deck.get(rndint).type + " : " + deck.get(rndint).value;
+        hand.add(deck.get(rndint));
+        deck.remove(rndint);
+        int rndint2 = rnd.nextInt(deck.size());
+        ohand.add(deck.get(rndint2));
+        deck.remove(rndint2);
+        return returning;
     }
 
     public void refreshCard1(View view) {
         TextView card1 = findViewById(R.id.card1);
+        String old = card1.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card1.setText(chooseValue());
     }
 
     public void refreshCard2(View view) {
         TextView card2 = findViewById(R.id.card2);
+        String old = card2.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card2.setText(chooseValue());
     }
 
     public void refreshCard3(View view) {
         TextView card3 = findViewById(R.id.card3);
+        String old = card3.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card3.setText(chooseValue());
     }
 
     public void refreshCard4(View view) {
         TextView card4 = findViewById(R.id.card4);
+        String old = card4.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card4.setText(chooseValue());
     }
 
     public void refreshCard5(View view) {
         TextView card5 = findViewById(R.id.card5);
+        String old = card5.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card5.setText(chooseValue());
     }
 
     public void refreshCard6(View view) {
         TextView card6 = findViewById(R.id.card6);
+        String old = card6.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card6.setText(chooseValue());
     }
 
     public void refreshCard7(View view) {
         TextView card7 = findViewById(R.id.card7);
+        String old = card7.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card7.setText(chooseValue());
     }
 
     public void refreshCard8(View view) {
         TextView card8 = findViewById(R.id.card8);
+        String old = card8.getText().toString().substring(0,2);
+        for (Card c : hand){
+            if (c.id.equals(old)) {
+                deck.add(c);
+                hand.remove(c);
+                break;
+            }
+        }
         card8.setText(chooseValue());
     }
 
@@ -68,20 +250,36 @@ public class MainActivity extends AppCompatActivity {
         TextView confirm = findViewById(R.id.confirm);
         confirm.setVisibility(View.GONE);
         TextView ocard1 = findViewById(R.id.ocard1);
+        String oc1 = ohand.get(0).id + " : " + ohand.get(0).type + " : " + ohand.get(0).value;
+        ocard1.setText(oc1);
         ocard1.setVisibility(View.VISIBLE);
         TextView ocard2 = findViewById(R.id.ocard2);
+        String oc2 = ohand.get(1).id + " : " + ohand.get(1).type + " : " + ohand.get(1).value;
+        ocard1.setText(oc2);
         ocard2.setVisibility(View.VISIBLE);
         TextView ocard3 = findViewById(R.id.ocard3);
+        String oc3 = ohand.get(2).id + " : " + ohand.get(2).type + " : " + ohand.get(2).value;
+        ocard1.setText(oc3);
         ocard3.setVisibility(View.VISIBLE);
         TextView ocard4 = findViewById(R.id.ocard4);
+        String oc4 = ohand.get(3).id + " : " + ohand.get(3).type + " : " + ohand.get(3).value;
+        ocard1.setText(oc4);
         ocard4.setVisibility(View.VISIBLE);
         TextView ocard5 = findViewById(R.id.ocard5);
+        String oc5 = ohand.get(4).id + " : " + ohand.get(4).type + " : " + ohand.get(4).value;
+        ocard1.setText(oc5);
         ocard5.setVisibility(View.VISIBLE);
         TextView ocard6 = findViewById(R.id.ocard6);
+        String oc6 = ohand.get(5).id + " : " + ohand.get(5).type + " : " + ohand.get(5).value;
+        ocard1.setText(oc6);
         ocard6.setVisibility(View.VISIBLE);
         TextView ocard7 = findViewById(R.id.ocard7);
+        String oc7 = ohand.get(6).id + " : " + ohand.get(6).type + " : " + ohand.get(6).value;
+        ocard1.setText(oc7);
         ocard7.setVisibility(View.VISIBLE);
         TextView ocard8 = findViewById(R.id.ocard8);
+        String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
+        ocard1.setText(oc8);
         ocard8.setVisibility(View.VISIBLE);
     }
 }
