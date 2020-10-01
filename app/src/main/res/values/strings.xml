@@ -5,4 +5,5 @@
     <string name="confirm">Confirm</string>
     <string name="pile">Pile</string>
     <string name="result">Result</string>
+    <string name="deck">Deck</string>
 </resources>

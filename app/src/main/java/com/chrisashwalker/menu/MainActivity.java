@@ -136,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         String returning = deck.get(rndint).id + " : " + deck.get(rndint).type + " : " + deck.get(rndint).value;
         hand.add(deck.get(rndint));
         deck.remove(rndint);
+        deck.add(ohand.get(0));
+        ohand.remove(0);
         int rndint2 = rnd.nextInt(deck.size());
         ohand.add(deck.get(rndint2));
         deck.remove(rndint2);
@@ -247,8 +249,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void confirmCards(View view) {
-        TextView confirm = findViewById(R.id.confirm);
-        confirm.setVisibility(View.GONE);
+        setContentView(R.layout.activity_main);
         TextView xcard1 = findViewById(R.id.opcard1);
         String oc1 = ohand.get(0).id + " : " + ohand.get(0).type + " : " + ohand.get(0).value;
         xcard1.setText(oc1);
@@ -281,5 +282,24 @@ public class MainActivity extends AppCompatActivity {
         String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
         xcard8.setText(oc8);
         xcard8.setVisibility(View.VISIBLE);
+        TextView resultview = findViewById(R.id.result);
+        String resultstring = "";
+        int playerscore = 0, opscore = 0;
+        for (Card pc : hand){
+            playerscore += pc.value;
+        }
+        for (Card oc : ohand){
+            opscore += oc.value;
+        }
+        if (playerscore > opscore){
+            resultstring = "You win! Your score: " + playerscore + "; Opponent score: " + opscore;
+        }
+        else if (playerscore == opscore){
+            resultstring = "It's a draw. Your score: " + playerscore + "; Opponent score: " + opscore;
+        }
+        if (playerscore < opscore){
+            resultstring = "You lose. Your score: " + playerscore + "; Opponent score: " + opscore;
+        }
+        resultview.setText(resultstring);
     }
 }

@@ -183,7 +183,7 @@
         app:layout_constraintTop_toBottomOf="@+id/card7" />
 
     <TextView
-        android:id="@+id/pile"
+        android:id="@+id/result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/result"
