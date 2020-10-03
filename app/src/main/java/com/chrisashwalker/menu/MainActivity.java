@@ -187,8 +187,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> missing = new ArrayList<>(goalset);
         missing.removeAll(currentset);
         if (missing.isEmpty()) {
-            TextView confirmview = findViewById(R.id.confirm);
-            confirmCards(confirmview);
+            endgame();
         } else {
             if (missing.contains(pilecard.type)) {
                 ohand.add(pilecard);
@@ -238,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
             if (deckcard.value > 0) {
                 newcard = deckcard.id + " : " + deckcard.type + " : " + deckcard.value;
                 hand.add(deckcard);
+                deckpicked = false;
                 oldcardview.setText(newcard);
                 hand.remove(oldcardobject);
                 deck.add(pilecard);
@@ -282,81 +282,110 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> missing = new ArrayList<>(goalset);
         missing.removeAll(currentset);
         if (missing.isEmpty()) {
-            setContentView(R.layout.activity_result);
-            TextView mcard1 = findViewById(R.id.card1);
-            TextView mcard2 = findViewById(R.id.card2);
-            TextView mcard3 = findViewById(R.id.card3);
-            TextView mcard4 = findViewById(R.id.card4);
-            TextView mcard5 = findViewById(R.id.card5);
-            TextView mcard6 = findViewById(R.id.card6);
-            TextView mcard7 = findViewById(R.id.card7);
-            TextView mcard8 = findViewById(R.id.card8);
-            TextView xcard1 = findViewById(R.id.opcard1);
-            String m1 = hand.get(0).id + " : " + hand.get(0).type + " : " + hand.get(0).value;
-            mcard1.setText(m1);
-            String m2 = hand.get(1).id + " : " + hand.get(1).type + " : " + hand.get(1).value;
-            mcard2.setText(m2);
-            String m3 = hand.get(2).id + " : " + hand.get(2).type + " : " + hand.get(2).value;
-            mcard3.setText(m3);
-            String m4 = hand.get(3).id + " : " + hand.get(3).type + " : " + hand.get(3).value;
-            mcard4.setText(m4);
-            String m5 = hand.get(4).id + " : " + hand.get(4).type + " : " + hand.get(4).value;
-            mcard5.setText(m5);
-            String m6 = hand.get(5).id + " : " + hand.get(5).type + " : " + hand.get(5).value;
-            mcard6.setText(m6);
-            String m7 = hand.get(6).id + " : " + hand.get(6).type + " : " + hand.get(6).value;
-            mcard7.setText(m7);
-            String m8 = hand.get(7).id + " : " + hand.get(7).type + " : " + hand.get(7).value;
-            mcard8.setText(m8);
-            String oc1 = ohand.get(0).id + " : " + ohand.get(0).type + " : " + ohand.get(0).value;
-            xcard1.setText(oc1);
-            xcard1.setVisibility(View.VISIBLE);
-            TextView xcard2 = findViewById(R.id.opcard2);
-            String oc2 = ohand.get(1).id + " : " + ohand.get(1).type + " : " + ohand.get(1).value;
-            xcard2.setText(oc2);
-            xcard2.setVisibility(View.VISIBLE);
-            TextView xcard3 = findViewById(R.id.opcard3);
-            String oc3 = ohand.get(2).id + " : " + ohand.get(2).type + " : " + ohand.get(2).value;
-            xcard3.setText(oc3);
-            xcard3.setVisibility(View.VISIBLE);
-            TextView xcard4 = findViewById(R.id.opcard4);
-            String oc4 = ohand.get(3).id + " : " + ohand.get(3).type + " : " + ohand.get(3).value;
-            xcard4.setText(oc4);
-            xcard4.setVisibility(View.VISIBLE);
-            TextView xcard5 = findViewById(R.id.opcard5);
-            String oc5 = ohand.get(4).id + " : " + ohand.get(4).type + " : " + ohand.get(4).value;
-            xcard5.setText(oc5);
-            xcard5.setVisibility(View.VISIBLE);
-            TextView xcard6 = findViewById(R.id.opcard6);
-            String oc6 = ohand.get(5).id + " : " + ohand.get(5).type + " : " + ohand.get(5).value;
-            xcard6.setText(oc6);
-            xcard6.setVisibility(View.VISIBLE);
-            TextView xcard7 = findViewById(R.id.opcard7);
-            String oc7 = ohand.get(6).id + " : " + ohand.get(6).type + " : " + ohand.get(6).value;
-            xcard7.setText(oc7);
-            xcard7.setVisibility(View.VISIBLE);
-            TextView xcard8 = findViewById(R.id.opcard8);
-            String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
-            xcard8.setText(oc8);
-            xcard8.setVisibility(View.VISIBLE);
-            TextView resultview = findViewById(R.id.result);
-            String resultstring = "";
-            int playerscore = 0, opscore = 0;
-            for (Card pc : hand) {
-                playerscore += pc.value;
-            }
-            for (Card oc : ohand) {
-                opscore += oc.value;
-            }
-            if (playerscore > opscore) {
-                resultstring = "You win! Your score: " + playerscore + "; Opponent score: " + opscore;
-            } else if (playerscore == opscore) {
-                resultstring = "It's a draw. Your score: " + playerscore + "; Opponent score: " + opscore;
-            }
-            if (playerscore < opscore) {
-                resultstring = "You lose. Your score: " + playerscore + "; Opponent score: " + opscore;
-            }
-            resultview.setText(resultstring);
+            endgame();
         }
+    }
+
+    public void endgame() {
+        setContentView(R.layout.activity_result);
+        TextView mcard1 = findViewById(R.id.card1);
+        TextView mcard2 = findViewById(R.id.card2);
+        TextView mcard3 = findViewById(R.id.card3);
+        TextView mcard4 = findViewById(R.id.card4);
+        TextView mcard5 = findViewById(R.id.card5);
+        TextView mcard6 = findViewById(R.id.card6);
+        TextView mcard7 = findViewById(R.id.card7);
+        TextView mcard8 = findViewById(R.id.card8);
+        TextView xcard1 = findViewById(R.id.opcard1);
+        String m1 = hand.get(0).id + " : " + hand.get(0).type + " : " + hand.get(0).value;
+        mcard1.setText(m1);
+        String m2 = hand.get(1).id + " : " + hand.get(1).type + " : " + hand.get(1).value;
+        mcard2.setText(m2);
+        String m3 = hand.get(2).id + " : " + hand.get(2).type + " : " + hand.get(2).value;
+        mcard3.setText(m3);
+        String m4 = hand.get(3).id + " : " + hand.get(3).type + " : " + hand.get(3).value;
+        mcard4.setText(m4);
+        String m5 = hand.get(4).id + " : " + hand.get(4).type + " : " + hand.get(4).value;
+        mcard5.setText(m5);
+        String m6 = hand.get(5).id + " : " + hand.get(5).type + " : " + hand.get(5).value;
+        mcard6.setText(m6);
+        String m7 = hand.get(6).id + " : " + hand.get(6).type + " : " + hand.get(6).value;
+        mcard7.setText(m7);
+        String m8 = hand.get(7).id + " : " + hand.get(7).type + " : " + hand.get(7).value;
+        mcard8.setText(m8);
+        String oc1 = ohand.get(0).id + " : " + ohand.get(0).type + " : " + ohand.get(0).value;
+        xcard1.setText(oc1);
+        xcard1.setVisibility(View.VISIBLE);
+        TextView xcard2 = findViewById(R.id.opcard2);
+        String oc2 = ohand.get(1).id + " : " + ohand.get(1).type + " : " + ohand.get(1).value;
+        xcard2.setText(oc2);
+        xcard2.setVisibility(View.VISIBLE);
+        TextView xcard3 = findViewById(R.id.opcard3);
+        String oc3 = ohand.get(2).id + " : " + ohand.get(2).type + " : " + ohand.get(2).value;
+        xcard3.setText(oc3);
+        xcard3.setVisibility(View.VISIBLE);
+        TextView xcard4 = findViewById(R.id.opcard4);
+        String oc4 = ohand.get(3).id + " : " + ohand.get(3).type + " : " + ohand.get(3).value;
+        xcard4.setText(oc4);
+        xcard4.setVisibility(View.VISIBLE);
+        TextView xcard5 = findViewById(R.id.opcard5);
+        String oc5 = ohand.get(4).id + " : " + ohand.get(4).type + " : " + ohand.get(4).value;
+        xcard5.setText(oc5);
+        xcard5.setVisibility(View.VISIBLE);
+        TextView xcard6 = findViewById(R.id.opcard6);
+        String oc6 = ohand.get(5).id + " : " + ohand.get(5).type + " : " + ohand.get(5).value;
+        xcard6.setText(oc6);
+        xcard6.setVisibility(View.VISIBLE);
+        TextView xcard7 = findViewById(R.id.opcard7);
+        String oc7 = ohand.get(6).id + " : " + ohand.get(6).type + " : " + ohand.get(6).value;
+        xcard7.setText(oc7);
+        xcard7.setVisibility(View.VISIBLE);
+        TextView xcard8 = findViewById(R.id.opcard8);
+        String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
+        xcard8.setText(oc8);
+        xcard8.setVisibility(View.VISIBLE);
+        TextView resultview = findViewById(R.id.result);
+        String resultstring = "";
+        int playerscore = 0, opscore = 0;
+        ArrayList<Card> scorebuilder = new ArrayList<>(hand);
+        ArrayList<Card> opscorebuilder = new ArrayList<>(ohand);
+        int pdeduct = 0, opdeduct = 0;
+        for (Card pc : scorebuilder) {
+            for (Card pc2 : scorebuilder) {
+                if (!pc2.id.equals(pc.id) && pc2.type.equals(pc.type)) {
+                    if (pc.value < pc2.value) {
+                        pdeduct += pc.value;
+                        break;
+                    }
+                }
+            }
+        }
+        for (Card pc3 : scorebuilder) {
+            playerscore += pc3.value;
+        }
+        playerscore -= pdeduct;
+        for (Card pc4 : opscorebuilder) {
+            for (Card pc5 : opscorebuilder) {
+                if (!pc5.id.equals(pc4.id) && pc5.type.equals(pc4.type)) {
+                    if (pc4.value < pc5.value) {
+                        opdeduct += pc4.value;
+                        break;
+                    }
+                }
+            }
+        }
+        for (Card pc6 : opscorebuilder) {
+            opscore += pc6.value;
+        }
+        opscore -= opdeduct;
+        if (playerscore > opscore) {
+            resultstring = "You win! Your score: " + playerscore + "; Opponent score: " + opscore;
+        } else if (playerscore == opscore) {
+            resultstring = "It's a draw. Your score: " + playerscore + "; Opponent score: " + opscore;
+        }
+        if (playerscore < opscore) {
+            resultstring = "You lose. Your score: " + playerscore + "; Opponent score: " + opscore;
+        }
+        resultview.setText(resultstring);
     }
 }
