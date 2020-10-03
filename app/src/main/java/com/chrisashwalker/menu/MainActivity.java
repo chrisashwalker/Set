@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 deck.add(pilecard);
             }
             pilecard = deckcard;
+            deckcard = dummy;
             TextView deckview = findViewById(R.id.deck);
             String decktext = "Deck";
             deckview.setText(decktext);
@@ -240,7 +241,9 @@ public class MainActivity extends AppCompatActivity {
                 deckpicked = false;
                 oldcardview.setText(newcard);
                 hand.remove(oldcardobject);
-                deck.add(pilecard);
+                if (pilecard.value > 0) {
+                    deck.add(pilecard);
+                }
                 pilecard = oldcardobject;
                 deckcard = dummy;
                 TextView deckview = findViewById(R.id.deck);
