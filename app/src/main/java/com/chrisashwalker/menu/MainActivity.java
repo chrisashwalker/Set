@@ -32,37 +32,59 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Card> deck = new ArrayList<>();
     ArrayList<Card> hand = new ArrayList<>();
     ArrayList<Card> ohand = new ArrayList<>();
+    ArrayList<Card> waiters = new ArrayList<>();
 
     Boolean piletaken = false;
     Boolean deckpicked = false;
 
-    Card dummy = new Card("00", "Z", 0);
+    int waitercount = 0;
+    int opwaitercount = 0;
+    String waitercounttext = "0 waiters";
+    String opwaitercounttext = "0 waiters";
+
+    Card dummy = new Card("00", "DUMMY", 0);
     Card deckcard = dummy;
     Card pilecard = dummy;
-    Card card1 = new Card("01", "A", 1);
-    Card card2 = new Card("02", "B", 1);
-    Card card3 = new Card("03", "C", 1);
-    Card card4 = new Card("04", "D", 1);
-    Card card5 = new Card("05", "E", 1);
-    Card card6 = new Card("06", "F", 1);
-    Card card7 = new Card("07", "G", 1);
-    Card card8 = new Card("08", "H", 1);
-    Card card9 = new Card("09", "A", 2);
-    Card card10 = new Card("10", "B", 2);
-    Card card11 = new Card("11", "C", 2);
-    Card card12 = new Card("12", "D", 2);
-    Card card13 = new Card("13", "E", 2);
-    Card card14 = new Card("14", "F", 2);
-    Card card15 = new Card("15", "G", 2);
-    Card card16 = new Card("16", "H", 2);
-    Card card17 = new Card("17", "A", 3);
-    Card card18 = new Card("18", "B", 3);
-    Card card19 = new Card("19", "C", 3);
-    Card card20 = new Card("20", "D", 3);
-    Card card21 = new Card("21", "E", 3);
-    Card card22 = new Card("22", "F", 3);
-    Card card23 = new Card("23", "G", 3);
-    Card card24 = new Card("24", "H", 3);
+    Card card1 = new Card("01", "Drink", 1);
+    Card card2 = new Card("02", "Drink", 4);
+    Card card3 = new Card("03", "Drink", 5);
+    Card card4 = new Card("04", "Drink", 6);
+    Card card5 = new Card("05", "Drink", 7);
+    Card card6 = new Card("06", "Meat", 1);
+    Card card7 = new Card("07", "Meat", 2);
+    Card card8 = new Card("08", "Meat", 4);
+    Card card9 = new Card("09", "Meat", 7);
+    Card card10 = new Card("10", "Meat", 9);
+    Card card11 = new Card("11", "Fish", 2);
+    Card card12 = new Card("12", "Fish", 4);
+    Card card13 = new Card("13", "Fish", 6);
+    Card card14 = new Card("14", "Fish", 8);
+    Card card15 = new Card("15", "Fish", 10);
+    Card card16 = new Card("16", "Roll", 5);
+    Card card17 = new Card("17", "Roll", 5);
+    Card card18 = new Card("18", "Roll", 5);
+    Card card19 = new Card("19", "Roll", 5);
+    Card card20 = new Card("20", "Soup", 2);
+    Card card21 = new Card("21", "Soup", 3);
+    Card card22 = new Card("22", "Soup", 4);
+    Card card23 = new Card("23", "Soup", 5);
+    Card card24 = new Card("24", "Soup", 8);
+    Card card25 = new Card("25", "Sweet", 3);
+    Card card26 = new Card("26", "Sweet", 4);
+    Card card27 = new Card("27", "Sweet", 4);
+    Card card28 = new Card("28", "Sweet", 6);
+    Card card29 = new Card("29", "Sweet", 8);
+    Card card30 = new Card("30", "Potato", 2);
+    Card card31 = new Card("31", "Potato", 3);
+    Card card32 = new Card("32", "Potato", 5);
+    Card card33 = new Card("33", "Potato", 6);
+    Card card34 = new Card("34", "Veg", 1);
+    Card card35 = new Card("35", "Veg", 3);
+    Card card36 = new Card("36", "Veg", 4);
+    Card card37 = new Card("37", "Veg", 5);
+    Card card38 = new Card("38", "Waiter", 5);
+    Card card39 = new Card("39", "Waiter", 5);
+    Card card40 = new Card("40", "Waiter", 5);
 
     public void addCards() {
         deck.add(card1);
@@ -89,6 +111,26 @@ public class MainActivity extends AppCompatActivity {
         deck.add(card22);
         deck.add(card23);
         deck.add(card24);
+        deck.add(card25);
+        deck.add(card26);
+        deck.add(card27);
+        deck.add(card28);
+        deck.add(card29);
+        deck.add(card30);
+        deck.add(card31);
+        deck.add(card32);
+        deck.add(card33);
+        deck.add(card34);
+        deck.add(card35);
+        deck.add(card36);
+        deck.add(card37);
+        deck.add(card38);
+        deck.add(card39);
+        deck.add(card40);
+
+        waiters.add(card38);
+        waiters.add(card39);
+        waiters.add(card40);
     }
 
     public void drawCards() {
@@ -132,20 +174,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void confirmtest(){
         ArrayList<String> goalset = new ArrayList<>();
-        goalset.add("A");
-        goalset.add("B");
-        goalset.add("C");
-        goalset.add("D");
-        goalset.add("E");
-        goalset.add("F");
-        goalset.add("G");
-        goalset.add("H");
+        goalset.add("Drink");
+        goalset.add("Meat");
+        goalset.add("Fish");
+        goalset.add("Roll");
+        goalset.add("Soup");
+        goalset.add("Sweet");
+        goalset.add("Potato");
+        goalset.add("Veg");
         ArrayList<String> currentset = new ArrayList<>();
         for (Card c : hand) {
             currentset.add(c.type);
         }
         ArrayList<String> missing = new ArrayList<>(goalset);
         missing.removeAll(currentset);
+        missing.remove("Waiter");
+        missing.remove("Waiter");
+        missing.remove("Waiter");
         if (missing.isEmpty()) {
             TextView confirmview = findViewById(R.id.confirm);
             confirmview.setVisibility(View.VISIBLE);
@@ -158,6 +203,8 @@ public class MainActivity extends AppCompatActivity {
         ohand.clear();
         deckcard = dummy;
         pilecard = dummy;
+        waitercount = 0;
+        opwaitercount = 0;
         setContentView(R.layout.activity_play);
         addCards();
         drawCards();
@@ -171,6 +218,35 @@ public class MainActivity extends AppCompatActivity {
             int rdint = rnd.nextInt(deck.size());
             deckcard = deck.get(rdint);
             deck.remove(rdint);
+            if (deckcard.type.equals("Waiter")) {
+                hand.add(deckcard);
+                waitercount += 1;
+                TextView waitercountview = findViewById(R.id.waitercountview);
+                waitercountview.setVisibility(View.VISIBLE);
+                waitercounttext = waitercount + " waiters";
+                waitercountview.setText(waitercounttext);
+                rdint = rnd.nextInt(deck.size());
+                deckcard = deck.get(rdint);
+                deck.remove(rdint);
+                if (deckcard.type.equals("Waiter")) {
+                    hand.add(deckcard);
+                    waitercount += 1;
+                    waitercounttext = waitercount + " waiters";
+                    waitercountview.setText(waitercounttext);
+                    rdint = rnd.nextInt(deck.size());
+                    deckcard = deck.get(rdint);
+                    deck.remove(rdint);
+                    if (deckcard.type.equals("Waiter")) {
+                        hand.add(deckcard);
+                        waitercount += 1;
+                        waitercounttext = waitercount + " waiters";
+                        waitercountview.setText(waitercounttext);
+                        rdint = rnd.nextInt(deck.size());
+                        deckcard = deck.get(rdint);
+                        deck.remove(rdint);
+                    }
+                }
+            }
             TextView deckview = findViewById(R.id.deck);
             deckview.setBackgroundColor(0xFF4CAF50);
             String decktext = deckcard.id + " : " + deckcard.type + " : " + deckcard.value;
@@ -200,20 +276,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void oturn() {
         ArrayList<String> goalset = new ArrayList<>();
-        goalset.add("A");
-        goalset.add("B");
-        goalset.add("C");
-        goalset.add("D");
-        goalset.add("E");
-        goalset.add("F");
-        goalset.add("G");
-        goalset.add("H");
+        goalset.add("Drink");
+        goalset.add("Meat");
+        goalset.add("Fish");
+        goalset.add("Roll");
+        goalset.add("Soup");
+        goalset.add("Sweet");
+        goalset.add("Potato");
+        goalset.add("Veg");
         ArrayList<String> currentset = new ArrayList<>();
         for (Card oc : ohand) {
             currentset.add(oc.type);
         }
         ArrayList<String> missing = new ArrayList<>(goalset);
         missing.removeAll(currentset);
+        missing.remove("Waiter");
+        missing.remove("Waiter");
+        missing.remove("Waiter");
         if (missing.isEmpty()) {
             endgame();
         } else {
@@ -225,11 +304,35 @@ public class MainActivity extends AppCompatActivity {
                 deckcard = deck.get(rint);
                 deck.remove(rint);
                 ohand.add(deckcard);
+                if (deckcard.type.equals("Waiter")) {
+                    opwaitercount += 1;
+                    rint = rd.nextInt(deck.size());
+                    deckcard = deck.get(rint);
+                    deck.remove(rint);
+                    ohand.add(deckcard);
+                    if (deckcard.type.equals("Waiter")) {
+                        opwaitercount += 1;
+                        rint = rd.nextInt(deck.size());
+                        deckcard = deck.get(rint);
+                        deck.remove(rint);
+                        ohand.add(deckcard);
+                        if (deckcard.type.equals("Waiter")) {
+                            opwaitercount += 1;
+                            rint = rd.nextInt(deck.size());
+                            deckcard = deck.get(rint);
+                            deck.remove(rint);
+                            ohand.add(deckcard);
+                        }
+                    }
+                }
                 deckcard = dummy;
             }
             for (String ty : goalset) {
                 currentset.remove(ty);
             }
+            currentset.remove("Waiter");
+            currentset.remove("Waiter");
+            currentset.remove("Waiter");
             String pickonetype = currentset.get(0);
             ArrayList<Card> duplicates = new ArrayList<>();
             for (Card ocd : ohand) {
@@ -300,20 +403,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void confirmCards(View view) {
         ArrayList<String> goalset = new ArrayList<>();
-        goalset.add("A");
-        goalset.add("B");
-        goalset.add("C");
-        goalset.add("D");
-        goalset.add("E");
-        goalset.add("F");
-        goalset.add("G");
-        goalset.add("H");
+        goalset.add("Drink");
+        goalset.add("Meat");
+        goalset.add("Fish");
+        goalset.add("Roll");
+        goalset.add("Soup");
+        goalset.add("Sweet");
+        goalset.add("Potato");
+        goalset.add("Veg");
         ArrayList<String> currentset = new ArrayList<>();
         for (Card c : hand) {
             currentset.add(c.type);
         }
         ArrayList<String> missing = new ArrayList<>(goalset);
         missing.removeAll(currentset);
+        missing.remove("Waiter");
+        missing.remove("Waiter");
+        missing.remove("Waiter");
         if (missing.isEmpty()) {
             endgame();
         }
@@ -321,6 +427,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void endgame() {
         setContentView(R.layout.activity_result);
+        TextView waitercountview = findViewById(R.id.waitercountview);
+        TextView opwaitercountview = findViewById(R.id.opwaitercountview);
+        waitercounttext = waitercount + " waiters";
+        opwaitercounttext = opwaitercount + " waiters";
+        waitercountview.setText(waitercounttext);
+        opwaitercountview.setText(opwaitercounttext);
         TextView mcard1 = findViewById(R.id.card1);
         TextView mcard2 = findViewById(R.id.card2);
         TextView mcard3 = findViewById(R.id.card3);
