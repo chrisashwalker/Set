@@ -429,8 +429,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
         TextView waitercountview = findViewById(R.id.waitercountview);
         TextView opwaitercountview = findViewById(R.id.opwaitercountview);
-        waitercounttext = waitercount + " waiters";
-        opwaitercounttext = opwaitercount + " waiters";
+        waitercounttext = "You had " + waitercount + " waiters (5pts each)";
+        opwaitercounttext = "Opponent had " + opwaitercount + " waiters (5pts each)";
         waitercountview.setText(waitercounttext);
         opwaitercountview.setText(opwaitercounttext);
         TextView resultview = findViewById(R.id.result);
