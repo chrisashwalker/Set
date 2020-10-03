@@ -12,7 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="80dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,9 +24,13 @@
         android:id="@+id/opcard2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="80dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/opcard1" />
 
@@ -30,9 +38,13 @@
         android:id="@+id/opcard3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="80dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/opcard2" />
 
@@ -40,9 +52,13 @@
         android:id="@+id/opcard4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="80dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/opcard3" />
 
@@ -51,8 +67,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="80dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="56dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/opcard6"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -61,8 +81,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="80dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="56dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/opcard7"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -71,8 +95,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="80dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="56dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/opcard8"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -82,7 +110,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="32dp"
+        android:background="#F44336"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -92,7 +124,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginTop="32dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -101,8 +137,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card1" />
 
@@ -111,8 +151,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card2" />
 
@@ -121,8 +165,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card3" />
 
@@ -131,8 +179,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="56dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/card6"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -141,8 +193,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="56dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/card7"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -151,8 +207,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="56dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/card8"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -162,7 +222,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginBottom="32dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
         android:text="@string/card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -171,13 +235,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:onClick="playGame"
         android:text="@string/result"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/opcard4"
-        app:layout_constraintStart_toEndOf="@+id/card4"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/opcard5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/opcard4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

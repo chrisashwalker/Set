@@ -130,6 +130,28 @@ public class MainActivity extends AppCompatActivity {
         vcard8.setText(c8);
     }
 
+    public void confirmtest(){
+        ArrayList<String> goalset = new ArrayList<>();
+        goalset.add("A");
+        goalset.add("B");
+        goalset.add("C");
+        goalset.add("D");
+        goalset.add("E");
+        goalset.add("F");
+        goalset.add("G");
+        goalset.add("H");
+        ArrayList<String> currentset = new ArrayList<>();
+        for (Card c : hand) {
+            currentset.add(c.type);
+        }
+        ArrayList<String> missing = new ArrayList<>(goalset);
+        missing.removeAll(currentset);
+        if (missing.isEmpty()) {
+            TextView confirmview = findViewById(R.id.confirm);
+            confirmview.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void playGame(View view) {
         deck.clear();
         hand.clear();
@@ -139,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play);
         addCards();
         drawCards();
+        confirmtest();
     }
 
     public void takeDeck(View view) {
@@ -266,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 oturn();
             }
         }
+        confirmtest();
     }
 
     public void confirmCards(View view) {
