@@ -33,7 +33,12 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Card> hand = new ArrayList<>();
     ArrayList<Card> ohand = new ArrayList<>();
 
+    Boolean piletaken = false;
+    Boolean deckpicked = false;
+
     Card dummy = new Card("00", "Z", 0);
+    Card deckcard = dummy;
+    Card pilecard = dummy;
     Card card1 = new Card("01", "A", 1);
     Card card2 = new Card("02", "B", 1);
     Card card3 = new Card("03", "C", 1);
@@ -126,211 +131,232 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void playGame(View view) {
+        deck.clear();
+        hand.clear();
+        ohand.clear();
+        deckcard = dummy;
+        pilecard = dummy;
         setContentView(R.layout.activity_play);
         addCards();
         drawCards();
     }
 
-    public void chooseValue(View view) {
-        Random rnd = new Random();
-        int rndint = rnd.nextInt(deck.size());
-        String returning = deck.get(rndint).id + " : " + deck.get(rndint).type + " : " + deck.get(rndint).value;
-        ArrayList<TextView> cardviews = new ArrayList<>();
-        TextView cardv1 = findViewById(R.id.card1);
-        TextView cardv2 = findViewById(R.id.card2);
-        TextView cardv3 = findViewById(R.id.card3);
-        TextView cardv4 = findViewById(R.id.card4);
-        TextView cardv5 = findViewById(R.id.card5);
-        TextView cardv6 = findViewById(R.id.card6);
-        TextView cardv7 = findViewById(R.id.card7);
-        TextView cardv8 = findViewById(R.id.card8);
-        cardviews.add(cardv1);
-        cardviews.add(cardv2);
-        cardviews.add(cardv3);
-        cardviews.add(cardv4);
-        cardviews.add(cardv5);
-        cardviews.add(cardv6);
-        cardviews.add(cardv7);
-        cardviews.add(cardv8);
-
-        for (int x = 0; x<8; x++){
-            if (hand.get(x) == dummy){
-                hand.set(x, deck.get(rndint));
-                cardviews.get(x).setText(returning);
+    public void takeDeck(View view) {
+        if (!piletaken && !deckpicked) {
+            deckpicked = true;
+            Random rnd = new Random();
+            int rdint = rnd.nextInt(deck.size());
+            deckcard = deck.get(rdint);
+            deck.remove(rdint);
+            TextView deckview = findViewById(R.id.deck);
+            String decktext = deckcard.id + " : " + deckcard.type + " : " + deckcard.value;
+            deckview.setText(decktext);
+        } else if (deckpicked){
+            if (pilecard.value > 0) {
+                deck.add(pilecard);
             }
-        }
-        deck.remove(rndint);
-        deck.add(ohand.get(0));
-        ohand.remove(0);
-        int rndint2 = rnd.nextInt(deck.size());
-        ohand.add(deck.get(rndint2));
-        deck.remove(rndint2);
-    }
-
-    public void refreshCard1(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard1 = findViewById(R.id.card1);
-            String old = wcard1.getText().toString().substring(0, 2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(0, dummy);
-                    break;
-                }
-            }
+            pilecard = deckcard;
+            TextView deckview = findViewById(R.id.deck);
+            String decktext = "Deck";
+            deckview.setText(decktext);
+            deckpicked = false;
+            oturn();
         }
     }
 
-    public void refreshCard2(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard2 = findViewById(R.id.card2);
-            String old = wcard2.getText().toString().substring(0,2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(1, dummy);
-                    break;
-                }
-            }
+    public void takePile(View view) {
+        if (deckcard.value == 0 && pilecard.value > 0) {
+            piletaken = true;
         }
     }
 
-    public void refreshCard3(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard3 = findViewById(R.id.card3);
-            String old = wcard3.getText().toString().substring(0, 2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(2, dummy);
-                    break;
+    public void oturn() {
+        ArrayList<String> goalset = new ArrayList<>();
+        goalset.add("A");
+        goalset.add("B");
+        goalset.add("C");
+        goalset.add("D");
+        goalset.add("E");
+        goalset.add("F");
+        goalset.add("G");
+        goalset.add("H");
+        ArrayList<String> currentset = new ArrayList<>();
+        for (Card oc : ohand) {
+            currentset.add(oc.type);
+        }
+        ArrayList<String> missing = new ArrayList<>(goalset);
+        missing.removeAll(currentset);
+        if (missing.isEmpty()) {
+            TextView confirmview = findViewById(R.id.confirm);
+            confirmCards(confirmview);
+        } else {
+            if (missing.contains(pilecard.type)) {
+                ohand.add(pilecard);
+            } else {
+                Random rd = new Random();
+                int rint = rd.nextInt(deck.size());
+                deckcard = deck.get(rint);
+                deck.remove(rint);
+                ohand.add(deckcard);
+                deckcard = dummy;
+            }
+            for (String ty : goalset) {
+                currentset.remove(ty);
+            }
+            String pickonetype = currentset.get(0);
+            ArrayList<Card> duplicates = new ArrayList<>();
+            for (Card ocd : ohand) {
+                if (pickonetype.equals(ocd.type)) {
+                    duplicates.add(ocd);
                 }
             }
+            if (duplicates.get(0).value < duplicates.get(1).value) {
+                pilecard = duplicates.get(0);
+                ohand.remove(duplicates.get(0));
+            } else {
+                pilecard = duplicates.get(1);
+                ohand.remove(duplicates.get(1));
+            }
+            TextView pileview = findViewById(R.id.pile);
+            String piletext = pilecard.id + " : " + pilecard.type + " : " + pilecard.value;
+            pileview.setText(piletext);
         }
     }
 
-    public void refreshCard4(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard4 = findViewById(R.id.card4);
-            String old = wcard4.getText().toString().substring(0, 2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(3, dummy);
-                    break;
-                }
+    public void replaceCard(View view) {
+        String newcard;
+        int oldcardviewid = view.getId();
+        TextView oldcardview = findViewById(oldcardviewid);
+        String oldcard = oldcardview.getText().toString().substring(0, 2);
+        Card oldcardobject = dummy;
+        for (Card c : hand) {
+            if (c.id.equals(oldcard)) {
+                oldcardobject = c;
             }
         }
-    }
-
-    public void refreshCard5(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard5 = findViewById(R.id.card5);
-            String old = wcard5.getText().toString().substring(0, 2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(4, dummy);
-                    break;
-                }
-            }
-        }
-    }
-
-    public void refreshCard6(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard6 = findViewById(R.id.card6);
-            String old = wcard6.getText().toString().substring(0, 2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(5, dummy);
-                    break;
-                }
-            }
-        }
-    }
-
-    public void refreshCard7(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard7 = findViewById(R.id.card7);
-            String old = wcard7.getText().toString().substring(0, 2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(6, dummy);
-                    break;
-                }
-            }
-        }
-    }
-
-    public void refreshCard8(View view) {
-        if (!hand.contains(dummy)) {
-            TextView wcard8 = findViewById(R.id.card8);
-            String old = wcard8.getText().toString().substring(0, 2);
-            for (Card c : hand) {
-                if (c.id.equals(old)) {
-                    deck.add(c);
-                    hand.set(7, dummy);
-                    break;
-                }
+        if (oldcardobject.value > 0) {
+            if (deckcard.value > 0) {
+                newcard = deckcard.id + " : " + deckcard.type + " : " + deckcard.value;
+                hand.add(deckcard);
+                oldcardview.setText(newcard);
+                hand.remove(oldcardobject);
+                deck.add(pilecard);
+                pilecard = oldcardobject;
+                deckcard = dummy;
+                TextView deckview = findViewById(R.id.deck);
+                String decktext = "Deck";
+                deckview.setText(decktext);
+                TextView pileview = findViewById(R.id.pile);
+                String piletext = pilecard.id + " : " + pilecard.type + " : " + pilecard.value;
+                pileview.setText(piletext);
+                oturn();
+            } else if (piletaken) {
+                newcard = pilecard.id + " : " + pilecard.type + " : " + pilecard.value;
+                oldcardview.setText(newcard);
+                hand.add(pilecard);
+                hand.remove(oldcardobject);
+                pilecard = oldcardobject;
+                TextView pileview = findViewById(R.id.pile);
+                String piletext = pilecard.id + " : " + pilecard.type + " : " + pilecard.value;
+                pileview.setText(piletext);
+                piletaken = false;
+                oturn();
             }
         }
     }
 
     public void confirmCards(View view) {
-        setContentView(R.layout.activity_main);
-        TextView xcard1 = findViewById(R.id.opcard1);
-        String oc1 = ohand.get(0).id + " : " + ohand.get(0).type + " : " + ohand.get(0).value;
-        xcard1.setText(oc1);
-        xcard1.setVisibility(View.VISIBLE);
-        TextView xcard2 = findViewById(R.id.opcard2);
-        String oc2 = ohand.get(1).id + " : " + ohand.get(1).type + " : " + ohand.get(1).value;
-        xcard2.setText(oc2);
-        xcard2.setVisibility(View.VISIBLE);
-        TextView xcard3 = findViewById(R.id.opcard3);
-        String oc3 = ohand.get(2).id + " : " + ohand.get(2).type + " : " + ohand.get(2).value;
-        xcard3.setText(oc3);
-        xcard3.setVisibility(View.VISIBLE);
-        TextView xcard4 = findViewById(R.id.opcard4);
-        String oc4 = ohand.get(3).id + " : " + ohand.get(3).type + " : " + ohand.get(3).value;
-        xcard4.setText(oc4);
-        xcard4.setVisibility(View.VISIBLE);
-        TextView xcard5 = findViewById(R.id.opcard5);
-        String oc5 = ohand.get(4).id + " : " + ohand.get(4).type + " : " + ohand.get(4).value;
-        xcard5.setText(oc5);
-        xcard5.setVisibility(View.VISIBLE);
-        TextView xcard6 = findViewById(R.id.opcard6);
-        String oc6 = ohand.get(5).id + " : " + ohand.get(5).type + " : " + ohand.get(5).value;
-        xcard6.setText(oc6);
-        xcard6.setVisibility(View.VISIBLE);
-        TextView xcard7 = findViewById(R.id.opcard7);
-        String oc7 = ohand.get(6).id + " : " + ohand.get(6).type + " : " + ohand.get(6).value;
-        xcard7.setText(oc7);
-        xcard7.setVisibility(View.VISIBLE);
-        TextView xcard8 = findViewById(R.id.opcard8);
-        String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
-        xcard8.setText(oc8);
-        xcard8.setVisibility(View.VISIBLE);
-        TextView resultview = findViewById(R.id.result);
-        String resultstring = "";
-        int playerscore = 0, opscore = 0;
-        for (Card pc : hand){
-            playerscore += pc.value;
+        ArrayList<String> goalset = new ArrayList<>();
+        goalset.add("A");
+        goalset.add("B");
+        goalset.add("C");
+        goalset.add("D");
+        goalset.add("E");
+        goalset.add("F");
+        goalset.add("G");
+        goalset.add("H");
+        ArrayList<String> currentset = new ArrayList<>();
+        for (Card c : hand) {
+            currentset.add(c.type);
         }
-        for (Card oc : ohand){
-            opscore += oc.value;
+        ArrayList<String> missing = new ArrayList<>(goalset);
+        missing.removeAll(currentset);
+        if (missing.isEmpty()) {
+            setContentView(R.layout.activity_result);
+            TextView mcard1 = findViewById(R.id.card1);
+            TextView mcard2 = findViewById(R.id.card2);
+            TextView mcard3 = findViewById(R.id.card3);
+            TextView mcard4 = findViewById(R.id.card4);
+            TextView mcard5 = findViewById(R.id.card5);
+            TextView mcard6 = findViewById(R.id.card6);
+            TextView mcard7 = findViewById(R.id.card7);
+            TextView mcard8 = findViewById(R.id.card8);
+            TextView xcard1 = findViewById(R.id.opcard1);
+            String m1 = hand.get(0).id + " : " + hand.get(0).type + " : " + hand.get(0).value;
+            mcard1.setText(m1);
+            String m2 = hand.get(1).id + " : " + hand.get(1).type + " : " + hand.get(1).value;
+            mcard2.setText(m2);
+            String m3 = hand.get(2).id + " : " + hand.get(2).type + " : " + hand.get(2).value;
+            mcard3.setText(m3);
+            String m4 = hand.get(3).id + " : " + hand.get(3).type + " : " + hand.get(3).value;
+            mcard4.setText(m4);
+            String m5 = hand.get(4).id + " : " + hand.get(4).type + " : " + hand.get(4).value;
+            mcard5.setText(m5);
+            String m6 = hand.get(5).id + " : " + hand.get(5).type + " : " + hand.get(5).value;
+            mcard6.setText(m6);
+            String m7 = hand.get(6).id + " : " + hand.get(6).type + " : " + hand.get(6).value;
+            mcard7.setText(m7);
+            String m8 = hand.get(7).id + " : " + hand.get(7).type + " : " + hand.get(7).value;
+            mcard8.setText(m8);
+            String oc1 = ohand.get(0).id + " : " + ohand.get(0).type + " : " + ohand.get(0).value;
+            xcard1.setText(oc1);
+            xcard1.setVisibility(View.VISIBLE);
+            TextView xcard2 = findViewById(R.id.opcard2);
+            String oc2 = ohand.get(1).id + " : " + ohand.get(1).type + " : " + ohand.get(1).value;
+            xcard2.setText(oc2);
+            xcard2.setVisibility(View.VISIBLE);
+            TextView xcard3 = findViewById(R.id.opcard3);
+            String oc3 = ohand.get(2).id + " : " + ohand.get(2).type + " : " + ohand.get(2).value;
+            xcard3.setText(oc3);
+            xcard3.setVisibility(View.VISIBLE);
+            TextView xcard4 = findViewById(R.id.opcard4);
+            String oc4 = ohand.get(3).id + " : " + ohand.get(3).type + " : " + ohand.get(3).value;
+            xcard4.setText(oc4);
+            xcard4.setVisibility(View.VISIBLE);
+            TextView xcard5 = findViewById(R.id.opcard5);
+            String oc5 = ohand.get(4).id + " : " + ohand.get(4).type + " : " + ohand.get(4).value;
+            xcard5.setText(oc5);
+            xcard5.setVisibility(View.VISIBLE);
+            TextView xcard6 = findViewById(R.id.opcard6);
+            String oc6 = ohand.get(5).id + " : " + ohand.get(5).type + " : " + ohand.get(5).value;
+            xcard6.setText(oc6);
+            xcard6.setVisibility(View.VISIBLE);
+            TextView xcard7 = findViewById(R.id.opcard7);
+            String oc7 = ohand.get(6).id + " : " + ohand.get(6).type + " : " + ohand.get(6).value;
+            xcard7.setText(oc7);
+            xcard7.setVisibility(View.VISIBLE);
+            TextView xcard8 = findViewById(R.id.opcard8);
+            String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
+            xcard8.setText(oc8);
+            xcard8.setVisibility(View.VISIBLE);
+            TextView resultview = findViewById(R.id.result);
+            String resultstring = "";
+            int playerscore = 0, opscore = 0;
+            for (Card pc : hand) {
+                playerscore += pc.value;
+            }
+            for (Card oc : ohand) {
+                opscore += oc.value;
+            }
+            if (playerscore > opscore) {
+                resultstring = "You win! Your score: " + playerscore + "; Opponent score: " + opscore;
+            } else if (playerscore == opscore) {
+                resultstring = "It's a draw. Your score: " + playerscore + "; Opponent score: " + opscore;
+            }
+            if (playerscore < opscore) {
+                resultstring = "You lose. Your score: " + playerscore + "; Opponent score: " + opscore;
+            }
+            resultview.setText(resultstring);
         }
-        if (playerscore > opscore){
-            resultstring = "You win! Your score: " + playerscore + "; Opponent score: " + opscore;
-        }
-        else if (playerscore == opscore){
-            resultstring = "It's a draw. Your score: " + playerscore + "; Opponent score: " + opscore;
-        }
-        if (playerscore < opscore){
-            resultstring = "You lose. Your score: " + playerscore + "; Opponent score: " + opscore;
-        }
-        resultview.setText(resultstring);
     }
 }
