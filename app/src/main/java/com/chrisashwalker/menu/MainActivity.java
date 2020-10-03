@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
             deckcard = deck.get(rdint);
             deck.remove(rdint);
             TextView deckview = findViewById(R.id.deck);
+            deckview.setBackgroundColor(0xFF4CAF50);
             String decktext = deckcard.id + " : " + deckcard.type + " : " + deckcard.value;
             deckview.setText(decktext);
         } else if (deckpicked){
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             pilecard = deckcard;
             deckcard = dummy;
             TextView deckview = findViewById(R.id.deck);
+            deckview.setBackgroundColor(0x0003A9F4);
             String decktext = "Deck";
             deckview.setText(decktext);
             deckpicked = false;
@@ -190,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void takePile(View view) {
         if (deckcard.value == 0 && pilecard.value > 0) {
+            TextView pileview = findViewById(R.id.pile);
+            pileview.setBackgroundColor(0xFF4CAF50);
             piletaken = true;
         }
     }
@@ -270,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 pilecard = oldcardobject;
                 deckcard = dummy;
                 TextView deckview = findViewById(R.id.deck);
+                deckview.setBackgroundColor(0x004CAF50);
                 String decktext = "Deck";
                 deckview.setText(decktext);
                 TextView pileview = findViewById(R.id.pile);
@@ -283,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                 hand.remove(oldcardobject);
                 pilecard = oldcardobject;
                 TextView pileview = findViewById(R.id.pile);
+                pileview.setBackgroundColor(0x004CAF50);
                 String piletext = pilecard.id + " : " + pilecard.type + " : " + pilecard.value;
                 pileview.setText(piletext);
                 piletaken = false;
