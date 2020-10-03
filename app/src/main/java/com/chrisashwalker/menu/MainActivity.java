@@ -124,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
         deck.add(card35);
         deck.add(card36);
         deck.add(card37);
-        deck.add(card38);
-        deck.add(card39);
-        deck.add(card40);
 
         waiters.add(card38);
         waiters.add(card39);
@@ -208,6 +205,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play);
         addCards();
         drawCards();
+        deck.add(waiters.get(0));
+        deck.add(waiters.get(1));
+        deck.add(waiters.get(2));
         confirmtest();
     }
 
@@ -433,6 +433,17 @@ public class MainActivity extends AppCompatActivity {
         opwaitercounttext = opwaitercount + " waiters";
         waitercountview.setText(waitercounttext);
         opwaitercountview.setText(opwaitercounttext);
+        TextView resultview = findViewById(R.id.result);
+        String resultstring = "";
+        int playerscore = 0, opscore = 0;
+        ArrayList<Card> scorebuilder = new ArrayList<>(hand);
+        ArrayList<Card> opscorebuilder = new ArrayList<>(ohand);
+        hand.remove(waiters.get(0));
+        hand.remove(waiters.get(1));
+        hand.remove(waiters.get(2));
+        ohand.remove(waiters.get(0));
+        ohand.remove(waiters.get(1));
+        ohand.remove(waiters.get(2));
         TextView mcard1 = findViewById(R.id.card1);
         TextView mcard2 = findViewById(R.id.card2);
         TextView mcard3 = findViewById(R.id.card3);
@@ -489,15 +500,10 @@ public class MainActivity extends AppCompatActivity {
         String oc8 = ohand.get(7).id + " : " + ohand.get(7).type + " : " + ohand.get(7).value;
         xcard8.setText(oc8);
         xcard8.setVisibility(View.VISIBLE);
-        TextView resultview = findViewById(R.id.result);
-        String resultstring = "";
-        int playerscore = 0, opscore = 0;
-        ArrayList<Card> scorebuilder = new ArrayList<>(hand);
-        ArrayList<Card> opscorebuilder = new ArrayList<>(ohand);
         int pdeduct = 0, opdeduct = 0;
         for (Card pc : scorebuilder) {
             for (Card pc2 : scorebuilder) {
-                if (!pc2.id.equals(pc.id) && pc2.type.equals(pc.type)) {
+                if (!pc2.id.equals(pc.id) && pc2.type.equals(pc.type) && !pc.type.equals("Waiter")) {
                     if (pc.value < pc2.value) {
                         pdeduct += pc.value;
                         break;
@@ -511,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
         playerscore -= pdeduct;
         for (Card pc4 : opscorebuilder) {
             for (Card pc5 : opscorebuilder) {
-                if (!pc5.id.equals(pc4.id) && pc5.type.equals(pc4.type)) {
+                if (!pc5.id.equals(pc4.id) && pc5.type.equals(pc4.type) && !pc4.type.equals("Waiter")) {
                     if (pc4.value < pc5.value) {
                         opdeduct += pc4.value;
                         break;
