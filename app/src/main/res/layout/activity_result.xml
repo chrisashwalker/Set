@@ -10,12 +10,12 @@
         android:id="@+id/opwaitercountview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:padding="2dp"
         android:text="@string/waiters"
         android:textAlignment="center"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -23,12 +23,12 @@
         android:id="@+id/waitercountview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:padding="2dp"
         android:text="@string/waiters"
         android:textAlignment="center"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +37,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="64dp"
         android:background="#F44336"
         android:padding="2dp"
@@ -45,99 +44,100 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/card1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/card1" />
 
     <TextView
         android:id="@+id/opcard2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:background="#F44336"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/card2"
         app:layout_constraintEnd_toEndOf="@+id/opcard1"
         app:layout_constraintStart_toStartOf="@+id/opcard1"
-        app:layout_constraintTop_toBottomOf="@+id/opcard1" />
+        app:layout_constraintTop_toTopOf="@+id/card2" />
 
     <TextView
         android:id="@+id/opcard3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:background="#F44336"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/card3"
         app:layout_constraintEnd_toEndOf="@+id/opcard2"
         app:layout_constraintStart_toStartOf="@+id/opcard2"
-        app:layout_constraintTop_toBottomOf="@+id/opcard2" />
+        app:layout_constraintTop_toTopOf="@+id/card3" />
 
     <TextView
         android:id="@+id/opcard4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:background="#F44336"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/card4"
         app:layout_constraintEnd_toEndOf="@+id/opcard3"
         app:layout_constraintStart_toStartOf="@+id/opcard3"
-        app:layout_constraintTop_toBottomOf="@+id/opcard3" />
+        app:layout_constraintTop_toTopOf="@+id/card4" />
 
     <TextView
         android:id="@+id/opcard5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:background="#F44336"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/opcard6"
+        app:layout_constraintBottom_toBottomOf="@+id/card5"
         app:layout_constraintEnd_toEndOf="@+id/opcard6"
-        app:layout_constraintStart_toStartOf="@+id/opcard6" />
+        app:layout_constraintStart_toStartOf="@+id/opcard6"
+        app:layout_constraintTop_toTopOf="@+id/card5" />
 
     <TextView
         android:id="@+id/opcard6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:background="#F44336"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/opcard7"
+        app:layout_constraintBottom_toBottomOf="@+id/card6"
         app:layout_constraintEnd_toEndOf="@+id/opcard7"
-        app:layout_constraintStart_toStartOf="@+id/opcard7" />
+        app:layout_constraintStart_toStartOf="@+id/opcard7"
+        app:layout_constraintTop_toTopOf="@+id/card6" />
 
     <TextView
         android:id="@+id/opcard7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:background="#F44336"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/opcard8"
+        app:layout_constraintBottom_toBottomOf="@+id/card7"
         app:layout_constraintEnd_toEndOf="@+id/opcard8"
-        app:layout_constraintStart_toStartOf="@+id/opcard8" />
+        app:layout_constraintStart_toStartOf="@+id/opcard8"
+        app:layout_constraintTop_toTopOf="@+id/card7" />
 
     <TextView
         android:id="@+id/opcard8"
@@ -145,69 +145,99 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="64dp"
-        android:layout_marginBottom="32dp"
         android:background="#F44336"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/card8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline" />
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/card8" />
 
     <TextView
         android:id="@+id/card1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
         android:background="#03A9F4"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/card2"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/card2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
         android:background="#03A9F4"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/card3"
         app:layout_constraintEnd_toEndOf="@+id/card1"
-        app:layout_constraintStart_toStartOf="@+id/card1"
-        app:layout_constraintTop_toBottomOf="@+id/card1" />
+        app:layout_constraintStart_toStartOf="@+id/card1" />
 
     <TextView
         android:id="@+id/card3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
         android:background="#03A9F4"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/card4"
         app:layout_constraintEnd_toEndOf="@+id/card2"
-        app:layout_constraintStart_toStartOf="@+id/card2"
-        app:layout_constraintTop_toBottomOf="@+id/card2" />
+        app:layout_constraintStart_toStartOf="@+id/card2" />
 
     <TextView
         android:id="@+id/card4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
+        android:text="@string/card"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/result"
+        app:layout_constraintEnd_toEndOf="@+id/card3"
+        app:layout_constraintStart_toStartOf="@+id/card3" />
+
+    <TextView
+        android:id="@+id/card5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
+        android:text="@string/card"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/card6"
+        app:layout_constraintStart_toStartOf="@+id/card6"
+        app:layout_constraintTop_toBottomOf="@+id/result" />
+
+    <TextView
+        android:id="@+id/card6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:background="#03A9F4"
         android:padding="2dp"
@@ -215,86 +245,56 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/card3"
-        app:layout_constraintStart_toStartOf="@+id/card3"
-        app:layout_constraintTop_toBottomOf="@+id/card3" />
-
-    <TextView
-        android:id="@+id/card5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:background="#03A9F4"
-        android:padding="2dp"
-        android:text="@string/card"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/card6"
-        app:layout_constraintEnd_toEndOf="@+id/card6"
-        app:layout_constraintStart_toStartOf="@+id/card6" />
-
-    <TextView
-        android:id="@+id/card6"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:background="#03A9F4"
-        android:padding="2dp"
-        android:text="@string/card"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/card7"
         app:layout_constraintEnd_toEndOf="@+id/card7"
-        app:layout_constraintStart_toStartOf="@+id/card7" />
+        app:layout_constraintStart_toStartOf="@+id/card7"
+        app:layout_constraintTop_toBottomOf="@+id/card5" />
 
     <TextView
         android:id="@+id/card7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="32dp"
         android:background="#03A9F4"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/card8"
         app:layout_constraintEnd_toEndOf="@+id/card8"
-        app:layout_constraintStart_toStartOf="@+id/card8" />
+        app:layout_constraintStart_toStartOf="@+id/card8"
+        app:layout_constraintTop_toBottomOf="@+id/card6" />
 
     <TextView
         android:id="@+id/card8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
         android:background="#03A9F4"
         android:padding="2dp"
         android:text="@string/card"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card7" />
 
     <TextView
         android:id="@+id/result"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:onClick="playGame"
         android:text="@string/result"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/opcard5"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/opcard4" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
