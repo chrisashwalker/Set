@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<TextView> HandViews = new ArrayList<>();
     ArrayList<TextView> OpponentHandViews = new ArrayList<>();
     ArrayList<String> RequiredSet = new ArrayList<>();
-    ArrayList<String> TestSet = new ArrayList<>();
-    ArrayList<String> RequiredMissing = new ArrayList<>();
 
     Boolean discardTaken = false;
     Boolean deckPicked = false;
@@ -134,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
     int randomInt;
 
     String TopOfDeckText = TopOfDeck.type + "\n" + TopOfDeck.value;
+    String DiscardedText = Discarded.type + "\n" + Discarded.value;
 
     public void buildDeck() {
         Deck.addAll(Arrays.asList(Card1,Card2,Card3,Card4,Card5,Card6,Card7,Card8,Card9,Card10,
@@ -175,14 +174,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void testFinished(){
+        ArrayList<String> TestSet = new ArrayList<>();
+        ArrayList<String> RequiredMissing = new ArrayList<>(RequiredSet);
         for (Card card : Hand) {
             TestSet.add(card.type);
         }
-        RequiredMissing = new ArrayList<>(RequiredSet);
         RequiredMissing.removeAll(TestSet);
-        for (Card card : Bonuses) {
-            RequiredMissing.remove(card.type);
-        }
         if (RequiredMissing.isEmpty()) {
             finishView = findViewById(R.id.finishView);
             finishView.setVisibility(View.VISIBLE);
@@ -214,10 +211,11 @@ public class MainActivity extends AppCompatActivity {
                 BonusHand.add(TopOfDeck);
                 deckPicked = false;
                 takeDeck(deckView);
+            } else {
+                bonusView.setText(bonusCountText);
+                deckView.setBackgroundColor(colorFocused);
+                deckView.setText(TopOfDeckText);
             }
-            bonusView.setText(bonusCountText);
-            deckView.setBackgroundColor(colorFocused);
-            deckView.setText(TopOfDeckText);
         } else if (deckPicked){
             if (Discarded.value > 0) {
                 Deck.add(Discarded);
@@ -227,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             deckView.setBackgroundColor(colorPrimary);
             deckView.setText(R.string.deck);
             deckPicked = false;
-            OpponentPlay();
+            opponentPlay();
         }
     }
 
@@ -238,82 +236,51 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void OpponentPlay() {
-        ArrayList<String> goalset = new ArrayList<>();
-        goalset.add("Drink");
-        goalset.add("Meat");
-        goalset.add("Fish");
-        goalset.add("Roll");
-        goalset.add("Soup");
-        goalset.add("Sweet");
-        goalset.add("Potato");
-        goalset.add("Veg");
-        ArrayList<String> currentset = new ArrayList<>();
-        for (Card oc : OpponentHand) {
-            currentset.add(oc.type);
+    public void opponentPlay() {
+        ArrayList<String> TestSet = new ArrayList<>();
+        ArrayList<String> RequiredMissing = new ArrayList<>(RequiredSet);
+        for (Card card : OpponentHand) {
+            TestSet.add(card.type);
         }
-        ArrayList<String> missing = new ArrayList<>(goalset);
-        missing.removeAll(currentset);
-        missing.remove("Waiter");
-        missing.remove("Waiter");
-        missing.remove("Waiter");
-        if (missing.isEmpty()) {
+        RequiredMissing.removeAll(TestSet);
+        if (RequiredMissing.isEmpty()) {
             endgame();
         } else {
-            if (missing.contains(Discarded.type)) {
+            if (RequiredMissing.contains(Discarded.type)) {
                 OpponentHand.add(Discarded);
             } else {
-                Random rd = new Random();
-                int rint = rd.nextInt(Deck.size());
-                TopOfDeck = Deck.get(rint);
-                Deck.remove(rint);
-                OpponentHand.add(TopOfDeck);
-                if (TopOfDeck.type.equals("Waiter")) {
-                    opponentBonusCount += 1;
-                    rint = rd.nextInt(Deck.size());
-                    TopOfDeck = Deck.get(rint);
-                    Deck.remove(rint);
+                int randomInt = random.nextInt(Deck.size());
+                TopOfDeck = Deck.get(randomInt);
+                Deck.remove(TopOfDeck);
+                if (TopOfDeck.type.equals(bonusType)) {
+                    OpponentBonusHand.add(TopOfDeck);
+                    opponentPlay();
+                } else {
                     OpponentHand.add(TopOfDeck);
-                    if (TopOfDeck.type.equals("Waiter")) {
-                        opponentBonusCount += 1;
-                        rint = rd.nextInt(Deck.size());
-                        TopOfDeck = Deck.get(rint);
-                        Deck.remove(rint);
-                        OpponentHand.add(TopOfDeck);
-                        if (TopOfDeck.type.equals("Waiter")) {
-                            opponentBonusCount += 1;
-                            rint = rd.nextInt(Deck.size());
-                            TopOfDeck = Deck.get(rint);
-                            Deck.remove(rint);
-                            OpponentHand.add(TopOfDeck);
+                    TopOfDeck = BlankCard;
+                    TestSet.clear();
+                    RequiredMissing.clear();
+                    RequiredMissing.addAll(RequiredSet);
+                    for (Card card : OpponentHand) {
+                        TestSet.add(card.type);
+                    }
+                    RequiredMissing.removeAll(TestSet);
+                    String firstTypePicked = RequiredMissing.get(0);
+                    ArrayList<Card> cardsOfSameType = new ArrayList<>();
+                    for (Card card : OpponentHand) {
+                        if (firstTypePicked.equals(card.type)) {
+                            cardsOfSameType.add(card);
                         }
                     }
-                }
-                TopOfDeck = BlankCard;
-            }
-            for (String ty : goalset) {
-                currentset.remove(ty);
-            }
-            currentset.remove("Waiter");
-            currentset.remove("Waiter");
-            currentset.remove("Waiter");
-            String pickonetype = currentset.get(0);
-            ArrayList<Card> duplicates = new ArrayList<>();
-            for (Card ocd : OpponentHand) {
-                if (pickonetype.equals(ocd.type)) {
-                    duplicates.add(ocd);
+                    if (cardsOfSameType.get(0).value < cardsOfSameType.get(1).value) {
+                        Discarded = cardsOfSameType.get(0);
+                    } else {
+                        Discarded = cardsOfSameType.get(1);
+                    }
+                    OpponentHand.remove(Discarded);
+                    discardView.setText(DiscardedText);
                 }
             }
-            if (duplicates.get(0).value < duplicates.get(1).value) {
-                Discarded = duplicates.get(0);
-                OpponentHand.remove(duplicates.get(0));
-            } else {
-                Discarded = duplicates.get(1);
-                OpponentHand.remove(duplicates.get(1));
-            }
-            TextView pileview = findViewById(R.id.discardView);
-            String piletext = Discarded.type + "\n" + Discarded.value;
-            pileview.setText(piletext);
         }
     }
 
@@ -347,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView pileview = findViewById(R.id.discardView);
                 String piletext = Discarded.type + "\n" + Discarded.value;
                 pileview.setText(piletext);
-                OpponentPlay();
+                opponentPlay();
             } else if (discardTaken) {
                 newcard = Discarded.type + "\n" + Discarded.value;
                 oldcardview.setText(newcard);
@@ -359,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                 String piletext = Discarded.type + "\n" + Discarded.value;
                 pileview.setText(piletext);
                 discardTaken = false;
-                OpponentPlay();
+                opponentPlay();
             }
         }
         testFinished();
