@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<TextView> HandViews = new ArrayList<>();
     ArrayList<TextView> OpponentHandViews = new ArrayList<>();
     ArrayList<String> RequiredSet = new ArrayList<>();
+    ArrayList<String> TestSet = new ArrayList<>();
+    ArrayList<String> RequiredMissing = new ArrayList<>();
+    ArrayList<Card> cardsOfSameType = new ArrayList<>();
 
     Boolean discardTaken = false;
     Boolean deckPicked = false;
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     String opponentBonusCountText = "";
     String TopOfDeckText = "";
     String DiscardedText = "";
+    String CardText = "";
     String cardType1 = "Drink";
     String cardType2 = "Meat";
     String cardType3 = "Fish";
@@ -110,9 +114,7 @@ public class MainActivity extends AppCompatActivity {
     TextView discardView;
     TextView deckView;
     TextView bonusView;
-    TextView opponentBonusView;
     TextView finishView;
-    TextView resultView;
     TextView cardView1;
     TextView cardView2;
     TextView cardView3;
@@ -121,19 +123,53 @@ public class MainActivity extends AppCompatActivity {
     TextView cardView6;
     TextView cardView7;
     TextView cardView8;
-    
+
+    public void playGame(View view) {
+        setContentView(R.layout.activity_play);
+        discardView = findViewById(R.id.discardView);
+        deckView = findViewById(R.id.deckView);
+        bonusView = findViewById(R.id.bonusView);
+        finishView = findViewById(R.id.finishView);
+        cardView1 = findViewById(R.id.card1);
+        cardView2 = findViewById(R.id.card2);
+        cardView3 = findViewById(R.id.card3);
+        cardView4 = findViewById(R.id.card4);
+        cardView5 = findViewById(R.id.card5);
+        cardView6 = findViewById(R.id.card6);
+        cardView7 = findViewById(R.id.card7);
+        cardView8 = findViewById(R.id.card8);
+        HandViews.clear();
+        HandViews.addAll(Arrays.asList(
+                cardView1,cardView2,cardView3,cardView4,cardView5,cardView6,cardView7,cardView8));
+        Hand.clear();
+        OpponentHand.clear();
+        BonusHand.clear();
+        OpponentBonusHand.clear();
+        Deck.clear();
+        TopOfDeck = BlankCard;
+        Discarded = BlankCard;
+        bonusCount = 0;
+        opponentBonusCount = 0;
+        buildDeck();
+        dealCards();
+        Deck.addAll(Bonuses);
+        testFinished();
+    }
+
     public void buildDeck() {
         Deck.addAll(Arrays.asList(Card1,Card2,Card3,Card4,Card5,Card6,Card7,Card8,Card9,Card10,
                 Card11,Card12,Card13,Card14,Card15,Card16,Card17,Card18,Card19,Card20,
                 Card21,Card22,Card23,Card24,Card25,Card26,Card27,Card28,Card29,Card30,
                 Card31,Card32,Card33,Card34,Card35,Card36,Card37));
-        
+
+        Bonuses.clear();
         Bonuses.add(BonusCard1);
         Bonuses.add(BonusCard2);
         Bonuses.add(BonusCard3);
-        
-        HandViews.addAll(Arrays.asList(
-                cardView1,cardView2,cardView3,cardView4,cardView5,cardView6,cardView7,cardView8));
+
+        RequiredSet.clear();
+        RequiredSet.addAll(Arrays.asList(cardType1,cardType2,cardType3,cardType4,
+                cardType5,cardType6,cardType7,cardType8));
     }
 
     public void dealCards() {
@@ -151,18 +187,16 @@ public class MainActivity extends AppCompatActivity {
             OpponentHand.add(dealtCard);
             Deck.remove(dealtCard);
         }
-        RequiredSet.addAll(Arrays.asList(cardType1,cardType2,cardType3,cardType4,
-                cardType5,cardType6,cardType7,cardType8));
     }
 
     public void testFinished(){
-        ArrayList<String> TestSet = new ArrayList<>();
-        ArrayList<String> RequiredMissing = new ArrayList<>(RequiredSet);
+        TestSet.clear();
+        RequiredMissing.clear();
+        RequiredMissing.addAll(RequiredSet);
         for (Card card : Hand) {
             TestSet.add(card.type);
         }
         RequiredMissing.removeAll(TestSet);
-        finishView = findViewById(R.id.finishView);
         if (RequiredMissing.isEmpty()) {
             finishView.setVisibility(View.VISIBLE);
         } else {
@@ -170,33 +204,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void playGame(View view) {
-        setContentView(R.layout.activity_play);
-        discardView = findViewById(R.id.discardView);
-        deckView = findViewById(R.id.deckView);
-        bonusView = findViewById(R.id.bonusView);
-        opponentBonusView = findViewById(R.id.opponentBonusView);
-        finishView = findViewById(R.id.finishView);
-        resultView = findViewById(R.id.resultView);
-        cardView1 = findViewById(R.id.card1);
-        cardView2 = findViewById(R.id.card2);
-        cardView3 = findViewById(R.id.card3);
-        cardView4 = findViewById(R.id.card4);
-        cardView5 = findViewById(R.id.card5);
-        cardView6 = findViewById(R.id.card6);
-        cardView7 = findViewById(R.id.card7);
-        cardView8 = findViewById(R.id.card8);
-        Hand.clear();
-        OpponentHand.clear();
-        Deck.clear();
-        TopOfDeck = BlankCard;
-        Discarded = BlankCard;
-        bonusCount = 0;
-        opponentBonusCount = 0;
-        buildDeck();
-        dealCards();
-        Deck.addAll(Bonuses);
-        testFinished();
+    public void takePile(View view) {
+        if (TopOfDeck.value == 0 && Discarded.value > 0) {
+            discardView.setBackgroundColor(0xFF4CAF50);
+            discardTaken = true;
+        }
     }
 
     public void takeDeck(View view) {
@@ -221,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             if (Discarded.value > 0) {
                 Deck.add(Discarded);
             }
-            Discarded = BlankCard;
+            Discarded = TopOfDeck;
             TopOfDeck = BlankCard;
             deckView.setBackgroundResource(0);
             deckView.setText(R.string.deck);
@@ -230,16 +242,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void takePile(View view) {
-        if (TopOfDeck.value == 0 && Discarded.value > 0) {
-            discardView.setBackgroundColor(0xFF4CAF50);
-            discardTaken = true;
-        }
-    }
-
     public void opponentPlay() {
-        ArrayList<String> TestSet = new ArrayList<>();
-        ArrayList<String> RequiredMissing = new ArrayList<>(RequiredSet);
+        TestSet.clear();
+        RequiredMissing.clear();
+        RequiredMissing.addAll(RequiredSet);
         for (Card card : OpponentHand) {
             TestSet.add(card.type);
         }
@@ -249,6 +255,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (RequiredMissing.contains(Discarded.type)) {
                 OpponentHand.add(Discarded);
+                Discarded = BlankCard;
+                discardView.setText(R.string.discards);
             } else {
                 int randomInt = random.nextInt(Deck.size());
                 TopOfDeck = Deck.get(randomInt);
@@ -259,50 +267,56 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     OpponentHand.add(TopOfDeck);
                     TopOfDeck = BlankCard;
-                    TestSet.clear();
-                    for (Card card : OpponentHand) {
-                        TestSet.add(card.type);
-                    }
-                    for (String type : RequiredSet) {
-                        TestSet.remove(type);
-                    }
-                    String firstTypePicked = TestSet.get(0);
-                    ArrayList<Card> cardsOfSameType = new ArrayList<>();
-                    for (Card card : OpponentHand) {
-                        if (firstTypePicked.equals(card.type)) {
-                            cardsOfSameType.add(card);
-                        }
-                    }
-                    if (cardsOfSameType.get(0).value < cardsOfSameType.get(1).value) {
-                        Discarded = cardsOfSameType.get(0);
-                    } else {
-                        Discarded = cardsOfSameType.get(1);
-                    }
-                    OpponentHand.remove(Discarded);
-                    DiscardedText = Discarded.type + "\n" + Discarded.value;
-                    discardView.setText(DiscardedText);
                 }
             }
+            TestSet.clear();
+            for (Card card : OpponentHand) {
+                TestSet.add(card.type);
+            }
+            for (String type : RequiredSet) {
+                TestSet.remove(type);
+            }
+            String firstTypePicked = TestSet.get(0);
+            cardsOfSameType.clear();
+            for (Card card : OpponentHand) {
+                if (firstTypePicked.equals(card.type)) {
+                    cardsOfSameType.add(card);
+                }
+            }
+            if (cardsOfSameType.get(0).value < cardsOfSameType.get(1).value) {
+                Discarded = cardsOfSameType.get(0);
+            } else {
+                Discarded = cardsOfSameType.get(1);
+            }
+            OpponentHand.remove(Discarded);
+            DiscardedText = Discarded.type + "\n" + Discarded.value;
+            discardView.setText(DiscardedText);
         }
     }
 
     public void replaceCard(View view) {
-        int cardNumber = Integer.parseInt(view.toString().replace("card",""));
-        if (TopOfDeck.value > 0) {
+//        int cardNumber = Integer.parseInt(view.toString().replace("card",""));
+        int cardNumber = 0;
+        if (deckPicked) {
             if (Discarded.value > 0) {
                 Deck.add(Discarded);
             }
             Discarded = Hand.get(cardNumber);
             Hand.set(cardNumber, TopOfDeck);
+            CardText = Hand.get(cardNumber).type + "\n" + Hand.get(cardNumber).value;
+            HandViews.get(cardNumber).setText(CardText);
             TopOfDeck = BlankCard;
             deckView.setBackgroundResource(0);
             deckView.setText(R.string.deck);
-            discardView.setText(R.string.discards);
+            DiscardedText = Discarded.type + "\n" + Discarded.value;
+            discardView.setText(DiscardedText);
             deckPicked = false;
             opponentPlay();
         } else if (discardTaken) {
             Discarded = Hand.get(cardNumber);
             Hand.set(cardNumber, Discarded);
+            CardText = Hand.get(cardNumber).type + "\n" + Hand.get(cardNumber).value;
+            HandViews.get(cardNumber).setText(CardText);
             discardView.setBackgroundResource(0);
             DiscardedText = Discarded.type + "\n" + Discarded.value;
             discardView.setText(DiscardedText);
@@ -314,6 +328,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void finishGame() {
         setContentView(R.layout.activity_result);
+        TextView resultView = findViewById(R.id.resultView);
+
+        //Rename in XML?
+        TextView cardView1 = findViewById(R.id.card1);
+        TextView cardView2 = findViewById(R.id.card2);
+        TextView cardView3 = findViewById(R.id.card3);
+        TextView cardView4 = findViewById(R.id.card4);
+        TextView cardView5 = findViewById(R.id.card5);
+        TextView cardView6 = findViewById(R.id.card6);
+        TextView cardView7 = findViewById(R.id.card7);
+        TextView cardView8 = findViewById(R.id.card8);
+        TextView bonusView = findViewById(R.id.bonusView);
+        HandViews.clear();
+        HandViews.addAll(Arrays.asList(
+                cardView1,cardView2,cardView3,cardView4,cardView5,cardView6,cardView7,cardView8));
+
+        TextView opponentBonusView = findViewById(R.id.opponentBonusView);
         TextView opponentCardView1 = findViewById(R.id.opponentCard1);
         TextView opponentCardView2 = findViewById(R.id.opponentCard2);
         TextView opponentCardView3 = findViewById(R.id.opponentCard3);
@@ -322,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
         TextView opponentCardView6 = findViewById(R.id.opponentCard6);
         TextView opponentCardView7 = findViewById(R.id.opponentCard7);
         TextView opponentCardView8 = findViewById(R.id.opponentCard8);
+        OpponentHandViews.clear();
         OpponentHandViews.addAll(Arrays.asList(
                 opponentCardView1,opponentCardView2,opponentCardView3,opponentCardView4,
                 opponentCardView5,opponentCardView6,opponentCardView7,opponentCardView8));
