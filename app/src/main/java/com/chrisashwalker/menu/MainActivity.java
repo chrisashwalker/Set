@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     int bonusCount = BonusHand.size();
     int opponentBonusCount = OpponentBonusHand.size();
     int colorPrimary = getResources().getColor(R.color.colorPrimary);
-    int colorAccent = getResources().getColor(R.color.colorAccent);
     int colorFocused = getResources().getColor(R.color.colorFocused);
     
     String bonusType = "Waiter";
@@ -180,9 +179,11 @@ public class MainActivity extends AppCompatActivity {
             TestSet.add(card.type);
         }
         RequiredMissing.removeAll(TestSet);
+        finishView = findViewById(R.id.finishView);
         if (RequiredMissing.isEmpty()) {
-            finishView = findViewById(R.id.finishView);
             finishView.setVisibility(View.VISIBLE);
+        } else {
+            finishView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -244,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         }
         RequiredMissing.removeAll(TestSet);
         if (RequiredMissing.isEmpty()) {
-            endgame();
+            finishGame();
         } else {
             if (RequiredMissing.contains(Discarded.type)) {
                 OpponentHand.add(Discarded);
@@ -285,189 +286,64 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void replaceCard(View view) {
-        String newcard;
-        int oldcardviewid = view.getId();
-        TextView oldcardview = findViewById(oldcardviewid);
-        String oldcard = oldcardview.getText().toString();
-        Card oldcardobject = BlankCard;
-        for (Card c : Hand) {
-            if ((c.type + "\n" + c.value).equals(oldcard)) {
-                oldcardobject = c;
+        int cardNumber = Integer.parseInt(view.toString().replace("card",""));
+        if (TopOfDeck.value > 0) {
+            if (Discarded.value > 0) {
+                Deck.add(Discarded);
             }
-        }
-        if (oldcardobject.value > 0) {
-            if (TopOfDeck.value > 0) {
-                newcard = TopOfDeck.type + "\n" + TopOfDeck.value;
-                Hand.add(TopOfDeck);
-                deckPicked = false;
-                oldcardview.setText(newcard);
-                Hand.remove(oldcardobject);
-                if (Discarded.value > 0) {
-                    Deck.add(Discarded);
-                }
-                Discarded = oldcardobject;
-                TopOfDeck = BlankCard;
-                TextView deckview = findViewById(R.id.deckView);
-                deckview.setBackgroundColor(colorFocused);
-                String decktext = "Deck\n";
-                deckview.setText(decktext);
-                TextView pileview = findViewById(R.id.discardView);
-                String piletext = Discarded.type + "\n" + Discarded.value;
-                pileview.setText(piletext);
-                opponentPlay();
-            } else if (discardTaken) {
-                newcard = Discarded.type + "\n" + Discarded.value;
-                oldcardview.setText(newcard);
-                Hand.add(Discarded);
-                Hand.remove(oldcardobject);
-                Discarded = oldcardobject;
-                TextView pileview = findViewById(R.id.discardView);
-                pileview.setBackgroundColor(colorFocused);
-                String piletext = Discarded.type + "\n" + Discarded.value;
-                pileview.setText(piletext);
-                discardTaken = false;
-                opponentPlay();
-            }
+            Discarded = Hand.get(cardNumber);
+            Hand.set(cardNumber, TopOfDeck);
+            TopOfDeck = BlankCard;
+            deckView.setBackgroundResource(0);
+            deckView.setText(R.string.deck);
+            discardView.setText(R.string.discards);
+            deckPicked = false;
+            opponentPlay();
+        } else if (discardTaken) {
+            Discarded = Hand.get(cardNumber);
+            Hand.set(cardNumber, Discarded);
+            discardView.setBackgroundResource(0);
+            discardView.setText(DiscardedText);
+            discardTaken = false;
+            opponentPlay();
         }
         testFinished();
     }
 
-    public void confirmCards(View view) {
-        ArrayList<String> goalset = new ArrayList<>();
-        goalset.add("Drink");
-        goalset.add("Meat");
-        goalset.add("Fish");
-        goalset.add("Roll");
-        goalset.add("Soup");
-        goalset.add("Sweet");
-        goalset.add("Potato");
-        goalset.add("Veg");
-        ArrayList<String> currentset = new ArrayList<>();
-        for (Card c : Hand) {
-            currentset.add(c.type);
-        }
-        ArrayList<String> missing = new ArrayList<>(goalset);
-        missing.removeAll(currentset);
-        missing.remove("Waiter");
-        missing.remove("Waiter");
-        missing.remove("Waiter");
-        if (missing.isEmpty()) {
-            endgame();
-        }
-    }
-
-    public void endgame() {
+    public void finishGame() {
         setContentView(R.layout.activity_result);
-        TextView waitercountview = findViewById(R.id.bonusView);
-        TextView opwaitercountview = findViewById(R.id.opponentBonusView);
-        bonusCountText = bonusCount + " waiter(s)";
-        opponentBonusCountText = opponentBonusCount + " waiter(s)";
-        waitercountview.setText(bonusCountText);
-        opwaitercountview.setText(opponentBonusCountText);
-        TextView resultview = findViewById(R.id.resultView);
-        String resultstring = "";
-        int playerscore = 0, opscore = 0;
-        ArrayList<Card> scorebuilder = new ArrayList<>(Hand);
-        ArrayList<Card> opscorebuilder = new ArrayList<>(OpponentHand);
-        Hand.remove(Bonuses.get(0));
-        Hand.remove(Bonuses.get(1));
-        Hand.remove(Bonuses.get(2));
-        OpponentHand.remove(Bonuses.get(0));
-        OpponentHand.remove(Bonuses.get(1));
-        OpponentHand.remove(Bonuses.get(2));
-        TextView mcard1 = findViewById(R.id.card1);
-        TextView mcard2 = findViewById(R.id.card2);
-        TextView mcard3 = findViewById(R.id.card3);
-        TextView mcard4 = findViewById(R.id.card4);
-        TextView mcard5 = findViewById(R.id.card5);
-        TextView mcard6 = findViewById(R.id.card6);
-        TextView mcard7 = findViewById(R.id.card7);
-        TextView mcard8 = findViewById(R.id.card8);
-        TextView xcard1 = findViewById(R.id.opponentCard1);
-        String m1 = Hand.get(0).type + "\n" + Hand.get(0).value;
-        mcard1.setText(m1);
-        String m2 = Hand.get(1).type + "\n" + Hand.get(1).value;
-        mcard2.setText(m2);
-        String m3 = Hand.get(2).type + "\n" + Hand.get(2).value;
-        mcard3.setText(m3);
-        String m4 = Hand.get(3).type + "\n" + Hand.get(3).value;
-        mcard4.setText(m4);
-        String m5 = Hand.get(4).type + "\n" + Hand.get(4).value;
-        mcard5.setText(m5);
-        String m6 = Hand.get(5).type + "\n" + Hand.get(5).value;
-        mcard6.setText(m6);
-        String m7 = Hand.get(6).type + "\n" + Hand.get(6).value;
-        mcard7.setText(m7);
-        String m8 = Hand.get(7).type + "\n" + Hand.get(7).value;
-        mcard8.setText(m8);
-        String oc1 = OpponentHand.get(0).type + "\n" + OpponentHand.get(0).value;
-        xcard1.setText(oc1);
-        xcard1.setVisibility(View.VISIBLE);
-        TextView xcard2 = findViewById(R.id.opponentCard2);
-        String oc2 = OpponentHand.get(1).type + "\n" + OpponentHand.get(1).value;
-        xcard2.setText(oc2);
-        xcard2.setVisibility(View.VISIBLE);
-        TextView xcard3 = findViewById(R.id.opponentCard3);
-        String oc3 = OpponentHand.get(2).type + "\n" + OpponentHand.get(2).value;
-        xcard3.setText(oc3);
-        xcard3.setVisibility(View.VISIBLE);
-        TextView xcard4 = findViewById(R.id.opponentCard4);
-        String oc4 = OpponentHand.get(3).type + "\n" + OpponentHand.get(3).value;
-        xcard4.setText(oc4);
-        xcard4.setVisibility(View.VISIBLE);
-        TextView xcard5 = findViewById(R.id.opponentCard5);
-        String oc5 = OpponentHand.get(4).type + "\n" + OpponentHand.get(4).value;
-        xcard5.setText(oc5);
-        xcard5.setVisibility(View.VISIBLE);
-        TextView xcard6 = findViewById(R.id.opponentCard6);
-        String oc6 = OpponentHand.get(5).type + "\n" + OpponentHand.get(5).value;
-        xcard6.setText(oc6);
-        xcard6.setVisibility(View.VISIBLE);
-        TextView xcard7 = findViewById(R.id.opponentCard7);
-        String oc7 = OpponentHand.get(6).type + "\n" + OpponentHand.get(6).value;
-        xcard7.setText(oc7);
-        xcard7.setVisibility(View.VISIBLE);
-        TextView xcard8 = findViewById(R.id.opponentCard8);
-        String oc8 = OpponentHand.get(7).type + "\n" + OpponentHand.get(7).value;
-        xcard8.setText(oc8);
-        xcard8.setVisibility(View.VISIBLE);
-        int pdeduct = 0, opdeduct = 0;
-        for (Card pc : scorebuilder) {
-            for (Card pc2 : scorebuilder) {
-                if (!pc2.id.equals(pc.id) && pc2.type.equals(pc.type) && !pc.type.equals("Waiter")) {
-                    if (pc.value < pc2.value) {
-                        pdeduct += pc.value;
-                        break;
-                    }
-                }
-            }
+        bonusView.setText(bonusCountText);
+        opponentBonusView.setText(opponentBonusCountText);
+        String results = "";
+        int playerScore = 0;
+        int opponentScore = 0;
+        for (int i = 0, i < 8, i++) {
+            String handText = Hand.get(i).type + "\n" + Hand.get(i).value;
+            String opponentHandText = OpponentHand.get(i).type + "\n" + OpponentHand.get(i).value;
+            HandViews.get(i).setText(handText);
+            OpponentHandViews.get(i).setText(opponentHandText);
+            OpponentHandViews.get(i).setVisibility(View.VISIBLE);
         }
-        for (Card pc3 : scorebuilder) {
-            playerscore += pc3.value;
+        for (Card card : Hand) {
+            playerScore += card.value;
         }
-        playerscore -= pdeduct;
-        for (Card pc4 : opscorebuilder) {
-            for (Card pc5 : opscorebuilder) {
-                if (!pc5.id.equals(pc4.id) && pc5.type.equals(pc4.type) && !pc4.type.equals("Waiter")) {
-                    if (pc4.value < pc5.value) {
-                        opdeduct += pc4.value;
-                        break;
-                    }
-                }
-            }
+        for (Card card : OpponentHand) {
+            opponentScore += card.value;
         }
-        for (Card pc6 : opscorebuilder) {
-            opscore += pc6.value;
+        for (Card card : BonusHand) {
+            playerScore += card.value;
         }
-        opscore -= opdeduct;
-        if (playerscore > opscore) {
-            resultstring = "You win! Your score: " + playerscore + "; Opponent score: " + opscore;
-        } else if (playerscore == opscore) {
-            resultstring = "It's a draw. Your score: " + playerscore + "; Opponent score: " + opscore;
+        for (Card card : OpponentBonusHand) {
+            opponentScore += card.value;
         }
-        if (playerscore < opscore) {
-            resultstring = "You lose. Your score: " + playerscore + "; Opponent score: " + opscore;
+        if (playerScore > opponentScore) {
+            results = "You win! Your score: " + playerScore + "; Opponent score: " + opponentScore;
+        } else if (playerScore == opponentScore) {
+            results = "It's a draw. Your score: " + playerScore + "; Opponent score: " + opponentScore;
         }
-        resultview.setText(resultstring);
+        if (playerScore < opponentScore) {
+            results = "You lose. Your score: " + playerScore + "; Opponent score: " + opponentScore;
+        }
+        resultView.setText(results);
     }
 }
