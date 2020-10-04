@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         missing.remove("Waiter");
         missing.remove("Waiter");
         if (missing.isEmpty()) {
-            TextView confirmview = findViewById(R.id.confirm);
+            TextView confirmview = findViewById(R.id.finishView);
             confirmview.setVisibility(View.VISIBLE);
         }
     }
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
             if (deckcard.type.equals("Waiter")) {
                 hand.add(deckcard);
                 waitercount += 1;
-                TextView waitercountview = findViewById(R.id.waitercountview);
+                TextView waitercountview = findViewById(R.id.waiterView);
                 waitercountview.setVisibility(View.VISIBLE);
                 waitercounttext = waitercount + " waiter";
                 waitercountview.setText(waitercounttext);
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-            TextView deckview = findViewById(R.id.deck);
+            TextView deckview = findViewById(R.id.deckView);
             deckview.setBackgroundColor(0xFF4CAF50);
             String decktext = deckcard.type + "\n" + deckcard.value;
             deckview.setText(decktext);
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
             }
             pilecard = deckcard;
             deckcard = dummy;
-            TextView deckview = findViewById(R.id.deck);
+            TextView deckview = findViewById(R.id.deckView);
             deckview.setBackgroundColor(0x0003A9F4);
             String decktext = "Deck\n";
             deckview.setText(decktext);
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void takePile(View view) {
         if (deckcard.value == 0 && pilecard.value > 0) {
-            TextView pileview = findViewById(R.id.pile);
+            TextView pileview = findViewById(R.id.discardView);
             pileview.setBackgroundColor(0xFF4CAF50);
             piletaken = true;
         }
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                 pilecard = duplicates.get(1);
                 ohand.remove(duplicates.get(1));
             }
-            TextView pileview = findViewById(R.id.pile);
+            TextView pileview = findViewById(R.id.discardView);
             String piletext = pilecard.type + "\n" + pilecard.value;
             pileview.setText(piletext);
         }
@@ -376,11 +376,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 pilecard = oldcardobject;
                 deckcard = dummy;
-                TextView deckview = findViewById(R.id.deck);
+                TextView deckview = findViewById(R.id.deckView);
                 deckview.setBackgroundColor(0x004CAF50);
                 String decktext = "Deck\n";
                 deckview.setText(decktext);
-                TextView pileview = findViewById(R.id.pile);
+                TextView pileview = findViewById(R.id.discardView);
                 String piletext = pilecard.type + "\n" + pilecard.value;
                 pileview.setText(piletext);
                 oturn();
@@ -390,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                 hand.add(pilecard);
                 hand.remove(oldcardobject);
                 pilecard = oldcardobject;
-                TextView pileview = findViewById(R.id.pile);
+                TextView pileview = findViewById(R.id.discardView);
                 pileview.setBackgroundColor(0x004CAF50);
                 String piletext = pilecard.type + "\n" + pilecard.value;
                 pileview.setText(piletext);
@@ -427,13 +427,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void endgame() {
         setContentView(R.layout.activity_result);
-        TextView waitercountview = findViewById(R.id.waitercountview);
-        TextView opwaitercountview = findViewById(R.id.opwaitercountview);
+        TextView waitercountview = findViewById(R.id.waiterView);
+        TextView opwaitercountview = findViewById(R.id.opwaiterView);
         waitercounttext = waitercount + " waiter(s)";
         opwaitercounttext = opwaitercount + " waiter(s)";
         waitercountview.setText(waitercounttext);
         opwaitercountview.setText(opwaitercounttext);
-        TextView resultview = findViewById(R.id.result);
+        TextView resultview = findViewById(R.id.resultView);
         String resultstring = "";
         int playerscore = 0, opscore = 0;
         ArrayList<Card> scorebuilder = new ArrayList<>(hand);

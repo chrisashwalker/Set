@@ -2,8 +2,8 @@
     <string name="app_name">Menu</string>
     <string name="start">Touch to start</string>
     <string name="card">Card\n</string>
-    <string name="confirm">Confirm</string>
-    <string name="pile">Pile\n</string>
+    <string name="finish">Finish</string>
+    <string name="discards">Discards\n</string>
     <string name="result">Result</string>
     <string name="deck">Deck\n</string>
     <string name="waiters">Waiters</string>
