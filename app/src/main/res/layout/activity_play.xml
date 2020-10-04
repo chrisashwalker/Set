@@ -10,8 +10,9 @@
         android:id="@+id/card1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -19,16 +20,17 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/pile"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/pile" />
 
     <TextView
         android:id="@+id/card2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -37,14 +39,15 @@
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pile"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/pile" />
 
     <TextView
         android:id="@+id/card3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -52,6 +55,7 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/deck"
         app:layout_constraintEnd_toEndOf="@+id/card1"
         app:layout_constraintStart_toStartOf="@+id/card1"
         app:layout_constraintTop_toBottomOf="@+id/card1" />
@@ -60,7 +64,8 @@
         android:id="@+id/card4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -68,6 +73,7 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/deck"
         app:layout_constraintEnd_toEndOf="@+id/card2"
         app:layout_constraintStart_toStartOf="@+id/card2"
         app:layout_constraintTop_toBottomOf="@+id/card2" />
@@ -76,7 +82,8 @@
         android:id="@+id/card5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="108dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -86,13 +93,15 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/card7"
         app:layout_constraintEnd_toEndOf="@+id/card3"
-        app:layout_constraintStart_toStartOf="@+id/card3" />
+        app:layout_constraintStart_toStartOf="@+id/card3"
+        app:layout_constraintTop_toBottomOf="@+id/deck" />
 
     <TextView
         android:id="@+id/card6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="108dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -102,13 +111,14 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/card8"
         app:layout_constraintEnd_toEndOf="@+id/card4"
-        app:layout_constraintStart_toStartOf="@+id/card4" />
+        app:layout_constraintStart_toStartOf="@+id/card4"
+        app:layout_constraintTop_toBottomOf="@+id/deck" />
 
     <TextView
         android:id="@+id/card7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="16dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -116,7 +126,7 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/confirm"
         app:layout_constraintEnd_toEndOf="@+id/card5"
         app:layout_constraintStart_toStartOf="@+id/card5" />
 
@@ -124,7 +134,7 @@
         android:id="@+id/card8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="16dp"
         android:background="#03A9F4"
         android:onClick="replaceCard"
         android:padding="2dp"
@@ -132,7 +142,7 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/confirm"
         app:layout_constraintEnd_toEndOf="@+id/card6"
         app:layout_constraintStart_toStartOf="@+id/card6" />
 
@@ -142,10 +152,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="181dp"
         android:layout_marginEnd="180dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="32dp"
         android:onClick="confirmCards"
         android:padding="2dp"
         android:text="@string/confirm"
+        android:textAlignment="center"
         android:textSize="24sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -154,12 +165,15 @@
 
     <TextView
         android:id="@+id/pile"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="136dp"
         android:onClick="takePile"
         android:padding="2dp"
         android:text="@string/pile"
+        android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -167,28 +181,41 @@
 
     <TextView
         android:id="@+id/deck"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="136dp"
+        android:layout_marginEnd="136dp"
         android:onClick="takeDeck"
         android:padding="2dp"
         android:text="@string/deck"
+        android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/card8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/card2" />
 
     <TextView
         android:id="@+id/waitercountview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:padding="2dp"
         android:text="@string/waiters"
+        android:textAlignment="center"
         android:textSize="24sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/confirm"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
