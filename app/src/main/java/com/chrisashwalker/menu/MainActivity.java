@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
         String results = "";
         int playerScore = 0;
         int opponentScore = 0;
-        for (int i = 0, i < 8, i++) {
+        for (int i = 0; i < 8; i++) {
             String handText = Hand.get(i).type + "\n" + Hand.get(i).value;
             String opponentHandText = OpponentHand.get(i).type + "\n" + OpponentHand.get(i).value;
             HandViews.get(i).setText(handText);
