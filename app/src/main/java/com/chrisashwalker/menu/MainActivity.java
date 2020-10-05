@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void takePile(View view) {
         if (TopOfDeck.value == 0 && Discarded.value > 0) {
+            // TODO: Define colours by Resources
             discardView.setBackgroundColor(0xFF4CAF50);
             discardTaken = true;
         }
@@ -223,10 +224,11 @@ public class MainActivity extends AppCompatActivity {
                 takeDeck(deckView);
             } else {
                 bonusCount = BonusHand.size();
-                bonusCountText = bonusCount + bonusType + "(s)";
+                bonusCountText = bonusCount + " " + bonusType + "(s)";
                 TopOfDeckText = TopOfDeck.type + "\n" + TopOfDeck.value;
                 bonusView.setText(bonusCountText);
                 deckView.setText(TopOfDeckText);
+                // TODO: Define colours by Resources
                 deckView.setBackgroundColor(0xFF4CAF50);
             }
         } else if (deckPicked){
@@ -250,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
             TestSet.add(card.type);
         }
         RequiredMissing.removeAll(TestSet);
+        // TODO: Consider difficulty settings
         if (RequiredMissing.isEmpty()) {
             finishGame();
         } else {
@@ -276,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
             for (String type : RequiredSet) {
                 TestSet.remove(type);
             }
-            //Issue below
             String firstTypePicked = TestSet.get(0);
             cardsOfSameType.clear();
             for (Card card : OpponentHand) {
@@ -296,16 +298,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void replaceCard(View view) {
-//        int cardNumber = Integer.parseInt(view.toString().replace("card",""));
-        int cardNumber = 0;
+        String cardId = view.getResources().getResourceEntryName(view.getId());
+        int cardIndex = Integer.parseInt(cardId.replace("card","")) - 1;
         if (deckPicked) {
             if (Discarded.value > 0) {
                 Deck.add(Discarded);
             }
-            Discarded = Hand.get(cardNumber);
-            Hand.set(cardNumber, TopOfDeck);
-            CardText = Hand.get(cardNumber).type + "\n" + Hand.get(cardNumber).value;
-            HandViews.get(cardNumber).setText(CardText);
+            Discarded = Hand.get(cardIndex);
+            Hand.set(cardIndex, TopOfDeck);
+            CardText = Hand.get(cardIndex).type + "\n" + Hand.get(cardIndex).value;
+            HandViews.get(cardIndex).setText(CardText);
             TopOfDeck = BlankCard;
             deckView.setBackgroundResource(0);
             deckView.setText(R.string.deck);
@@ -314,10 +316,11 @@ public class MainActivity extends AppCompatActivity {
             deckPicked = false;
             opponentPlay();
         } else if (discardTaken) {
-            Discarded = Hand.get(cardNumber);
-            Hand.set(cardNumber, Discarded);
-            CardText = Hand.get(cardNumber).type + "\n" + Hand.get(cardNumber).value;
-            HandViews.get(cardNumber).setText(CardText);
+            Card replacedCard = Hand.get(cardIndex);
+            Hand.set(cardIndex, Discarded);
+            Discarded = replacedCard;
+            CardText = Hand.get(cardIndex).type + "\n" + Hand.get(cardIndex).value;
+            HandViews.get(cardIndex).setText(CardText);
             discardView.setBackgroundResource(0);
             DiscardedText = Discarded.type + "\n" + Discarded.value;
             discardView.setText(DiscardedText);
@@ -331,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
         TextView resultView = findViewById(R.id.resultView);
 
-        //Rename in XML?
+        // TODO: Rename these in XML or write init script?
         TextView cardView1 = findViewById(R.id.card1);
         TextView cardView2 = findViewById(R.id.card2);
         TextView cardView3 = findViewById(R.id.card3);
@@ -360,8 +363,8 @@ public class MainActivity extends AppCompatActivity {
                 opponentCardView5,opponentCardView6,opponentCardView7,opponentCardView8));
         bonusCount = BonusHand.size();
         opponentBonusCount = OpponentBonusHand.size();
-        bonusCountText = bonusCount + bonusType + "(s)";
-        opponentBonusCountText = opponentBonusCount + bonusType + "(s)";
+        bonusCountText = bonusCount + " " + bonusType + "(s)";
+        opponentBonusCountText = opponentBonusCount + " " + bonusType + "(s)";
         bonusView.setText(bonusCountText);
         opponentBonusView.setText(opponentBonusCountText);
         String results = "";
