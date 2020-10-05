@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         RequiredMissing.removeAll(TestSet);
         // TODO: Consider difficulty settings
         if (RequiredMissing.isEmpty()) {
-            finishGame();
+            finishGame(finishView);
         } else {
             if (RequiredMissing.contains(Discarded.type)) {
                 OpponentHand.add(Discarded);
@@ -266,11 +266,17 @@ public class MainActivity extends AppCompatActivity {
                 Deck.remove(TopOfDeck);
                 if (TopOfDeck.type.equals(bonusType)) {
                     OpponentBonusHand.add(TopOfDeck);
-                    opponentPlay();
-                } else {
-                    OpponentHand.add(TopOfDeck);
-                    TopOfDeck = BlankCard;
+                    while (TopOfDeck.type.equals(bonusType)) {
+                        randomInt = random.nextInt(Deck.size());
+                        TopOfDeck = Deck.get(randomInt);
+                        Deck.remove(TopOfDeck);
+                        if (TopOfDeck.type.equals(bonusType)) {
+                            OpponentBonusHand.add(TopOfDeck);
+                        }
+                    }
                 }
+                OpponentHand.add(TopOfDeck);
+                TopOfDeck = BlankCard;
             }
             TestSet.clear();
             for (Card card : OpponentHand) {
@@ -330,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         testFinished();
     }
 
-    public void finishGame() {
+    public void finishGame(View view) {
         setContentView(R.layout.activity_result);
         TextView resultView = findViewById(R.id.resultView);
 
