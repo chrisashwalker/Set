@@ -276,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
             for (String type : RequiredSet) {
                 TestSet.remove(type);
             }
+            //Issue below
             String firstTypePicked = TestSet.get(0);
             cardsOfSameType.clear();
             for (Card card : OpponentHand) {
