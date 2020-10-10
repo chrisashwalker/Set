@@ -383,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
             OpponentHandViews.get(i).setText(opponentHandText);
             OpponentHandViews.get(i).setVisibility(View.VISIBLE);
         }
+        // TODO: Deduct points for duplicated card types
         for (Card card : Hand) {
             playerScore += card.value;
         }
