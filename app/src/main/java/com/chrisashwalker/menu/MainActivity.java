@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     int bonusCount = 0;
     int opponentBonusCount = 0;
-    
+
     String bonusType = "Waiter";
     String bonusCountText = "";
     String opponentBonusCountText = "";
@@ -386,8 +386,8 @@ public class MainActivity extends AppCompatActivity {
         for (Card card : Hand) {
             for (Card cardtest : Hand) {
                 if (card.type.equals(cardtest.type) && card.value < cardtest.value) {
-                        playerScore -= card.value;
-                        continue;
+                    playerScore -= card.value;
+                    break;
                 }
             }
             playerScore += card.value;
@@ -395,8 +395,8 @@ public class MainActivity extends AppCompatActivity {
         for (Card card : OpponentHand) {
             for (Card cardtest : OpponentHand) {
                 if (card.type.equals(cardtest.type) && card.value < cardtest.value) {
-                        opponentScore -= card.value;
-                        continue;
+                    opponentScore -= card.value;
+                    break;
                 }
             }
             opponentScore += card.value;
