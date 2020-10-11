@@ -82,9 +82,26 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
+# Menu specific
+.gradle/
 .idea/
+.settings/
+gradle/
+.gitattributes
 .project
-.settings/org.eclipse.buildship.core.prefs
+build.gradle
+gradle.properties
+gradlew
+gradlew.bat
+local.properties
+settings.gradle
+app/.settings
+app/build
+app/libs
 app/.classpath
+app/.gitignore
 app/.project
-app/.settings/org.eclipse.buildship.core.prefs
+app/build.gradle
+app/proguard-rules.pro
+app\src\androidTest
+app\src\test
