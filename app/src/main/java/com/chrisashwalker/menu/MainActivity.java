@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
                 bonusCountText = bonusCount + " " + bonusType + "(s)";
                 TopOfDeckText = TopOfDeck.type + "\n" + TopOfDeck.value;
                 bonusView.setText(bonusCountText);
+                // TODO: Set both bonus count textviews to be visible
                 deckView.setText(TopOfDeckText);
                 // TODO: Define colours by Resources
                 deckView.setBackgroundColor(0xFF4CAF50);
