@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     int bonusCount = 0;
     int opponentBonusCount = 0;
+    int opponentScoreTest = 0;
+    int opponentScoreGoal = 0;
 
     String bonusType = "Waiter";
     String bonusCountText = "";
@@ -156,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
         buildDeck();
         dealCards();
         Deck.addAll(Bonuses);
+        opponentScoreTest = 0;
+        opponentScoreGoal = random.nextInt(41) + 17;
         testFinished();
     }
 
@@ -251,12 +255,13 @@ public class MainActivity extends AppCompatActivity {
         TestSet.clear();
         RequiredMissing.clear();
         RequiredMissing.addAll(RequiredSet);
+        opponentScoreTest = 0;
         for (Card card : OpponentHand) {
             TestSet.add(card.type);
+            opponentScoreTest += card.value;
         }
         RequiredMissing.removeAll(TestSet);
-        // TODO: Consider difficulty settings
-        if (RequiredMissing.isEmpty()) {
+        if (RequiredMissing.isEmpty() && opponentScoreTest >= opponentScoreGoal) {
             finishGame(finishView);
         } else {
             if (RequiredMissing.contains(Discarded.type)) {
@@ -348,8 +353,6 @@ public class MainActivity extends AppCompatActivity {
     public void finishGame(View view) {
         setContentView(R.layout.activity_result);
         TextView resultView = findViewById(R.id.resultView);
-
-        // TODO: Rename these in XML or write init script?
         TextView cardView1 = findViewById(R.id.card1);
         TextView cardView2 = findViewById(R.id.card2);
         TextView cardView3 = findViewById(R.id.card3);
