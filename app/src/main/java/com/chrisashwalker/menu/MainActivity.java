@@ -1,6 +1,7 @@
 package com.chrisashwalker.menu;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
 import android.view.View;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     int bonusCount = 0;
     int opponentBonusCount = 0;
+    int opponentScoreTest = 0;
+    int opponentScoreGoal = 0;
 
     String bonusType = "Waiter";
     String bonusCountText = "";
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     TextView discardView;
     TextView deckView;
     TextView bonusView;
+    TextView opponentBonusView;
     TextView finishView;
     TextView cardView1;
     TextView cardView2;
@@ -129,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         discardView = findViewById(R.id.discardView);
         deckView = findViewById(R.id.deckView);
         bonusView = findViewById(R.id.bonusView);
+        opponentBonusView = findViewById(R.id.opponentBonusView);
         finishView = findViewById(R.id.finishView);
         cardView1 = findViewById(R.id.card1);
         cardView2 = findViewById(R.id.card2);
@@ -153,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
         buildDeck();
         dealCards();
         Deck.addAll(Bonuses);
+        opponentScoreTest = 0;
+        opponentScoreGoal = random.nextInt(41) + 17;
         testFinished();
     }
 
@@ -206,8 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void takePile(View view) {
         if (TopOfDeck.value == 0 && Discarded.value > 0) {
-            // TODO: Define colours by Resources
-            discardView.setBackgroundColor(0xFF4CAF50);
+            discardView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFocused));
             discardTaken = true;
         }
     }
@@ -222,15 +228,15 @@ public class MainActivity extends AppCompatActivity {
                 BonusHand.add(TopOfDeck);
                 deckPicked = false;
                 takeDeck(deckView);
+                bonusView.setVisibility(View.VISIBLE);
             } else {
                 bonusCount = BonusHand.size();
                 bonusCountText = bonusCount + " " + bonusType + "(s)";
                 TopOfDeckText = TopOfDeck.type + "\n" + TopOfDeck.value;
                 bonusView.setText(bonusCountText);
-                // TODO: Set both bonus count textviews to be visible
                 deckView.setText(TopOfDeckText);
-                // TODO: Define colours by Resources
-                deckView.setBackgroundColor(0xFF4CAF50);
+                deckView.setBackgroundColor(
+                        ContextCompat.getColor(this, R.color.colorFocused));
             }
         } else if (deckPicked){
             if (Discarded.value > 0) {
@@ -249,12 +255,13 @@ public class MainActivity extends AppCompatActivity {
         TestSet.clear();
         RequiredMissing.clear();
         RequiredMissing.addAll(RequiredSet);
+        opponentScoreTest = 0;
         for (Card card : OpponentHand) {
             TestSet.add(card.type);
+            opponentScoreTest += card.value;
         }
         RequiredMissing.removeAll(TestSet);
-        // TODO: Consider difficulty settings
-        if (RequiredMissing.isEmpty()) {
+        if (RequiredMissing.isEmpty() && opponentScoreTest >= opponentScoreGoal) {
             finishGame(finishView);
         } else {
             if (RequiredMissing.contains(Discarded.type)) {
@@ -275,6 +282,12 @@ public class MainActivity extends AppCompatActivity {
                             OpponentBonusHand.add(TopOfDeck);
                         }
                     }
+                }
+                if (OpponentBonusHand.size() > 0){
+                    opponentBonusCount = OpponentBonusHand.size();
+                    opponentBonusCountText = opponentBonusCount + " " + bonusType + "(s)";
+                    opponentBonusView.setText(opponentBonusCountText);
+                    opponentBonusView.setVisibility(View.VISIBLE);
                 }
                 OpponentHand.add(TopOfDeck);
                 TopOfDeck = BlankCard;
@@ -340,8 +353,6 @@ public class MainActivity extends AppCompatActivity {
     public void finishGame(View view) {
         setContentView(R.layout.activity_result);
         TextView resultView = findViewById(R.id.resultView);
-
-        // TODO: Rename these in XML or write init script?
         TextView cardView1 = findViewById(R.id.card1);
         TextView cardView2 = findViewById(R.id.card2);
         TextView cardView3 = findViewById(R.id.card3);
