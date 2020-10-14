@@ -213,6 +213,22 @@
         app:layout_constraintEnd_toStartOf="@+id/finishView"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/opponentBonusView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:padding="2dp"
+        android:text="@string/bonuses"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/finishView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertGuideline"
         android:layout_width="wrap_content"
