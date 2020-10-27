@@ -272,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 int randomInt = random.nextInt(Deck.size());
                 TopOfDeck = Deck.get(randomInt);
                 Deck.remove(TopOfDeck);
+                Deck.add(Discarded);
                 if (TopOfDeck.type.equals(bonusType)) {
                     OpponentBonusHand.add(TopOfDeck);
                     while (TopOfDeck.type.equals(bonusType)) {
