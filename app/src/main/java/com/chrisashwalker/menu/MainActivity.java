@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Card> OpponentHand = new ArrayList<>();
     ArrayList<Card> BonusHand = new ArrayList<>();
     ArrayList<Card> OpponentBonusHand = new ArrayList<>();
-    ArrayList<Card> Bonuses = new ArrayList<>();
     ArrayList<TextView> HandViews = new ArrayList<>();
     ArrayList<TextView> OpponentHandViews = new ArrayList<>();
     ArrayList<String> RequiredSet = new ArrayList<>();
@@ -157,23 +156,24 @@ public class MainActivity extends AppCompatActivity {
         opponentBonusCount = 0;
         buildDeck();
         dealCards();
-        Deck.addAll(Bonuses);
         opponentScoreTest = 0;
         opponentScoreGoal = random.nextInt(41) + 17;
         testFinished();
     }
 
     public void buildDeck() {
-        Deck.addAll(Arrays.asList(Card1,Card2,Card3,Card4,Card5,Card6,Card7,Card8,Card9,Card10,
-                Card11,Card12,Card13,Card14,Card15,Card16,Card17,Card18,Card19,Card20,
-                Card21,Card22,Card23,Card24,Card25,Card26,Card27,Card28,Card29,Card30,
-                Card31,Card32,Card33,Card34,Card35,Card36,Card37));
-
-        Bonuses.clear();
-        Bonuses.add(BonusCard1);
-        Bonuses.add(BonusCard2);
-        Bonuses.add(BonusCard3);
-
+        ArrayList<Card> TempDeck = new ArrayList<>(Arrays.asList(
+                Card1, Card2, Card3, Card4, Card5, Card6, Card7, Card8, Card9, Card10,
+                Card11, Card12, Card13, Card14, Card15, Card16, Card17, Card18, Card19, Card20,
+                Card21, Card22, Card23, Card24, Card25, Card26, Card27, Card28, Card29, Card30,
+                Card31, Card32, Card33, Card34, Card35, Card36, Card37,
+                BonusCard1, BonusCard2, BonusCard3));
+        while (!TempDeck.isEmpty()) {
+            randomInt = random.nextInt(TempDeck.size());
+            Card shuffleCard = TempDeck.get(randomInt);
+            TempDeck.remove(shuffleCard);
+            Deck.add(shuffleCard);
+        }
         RequiredSet.clear();
         RequiredSet.addAll(Arrays.asList(cardType1,cardType2,cardType3,cardType4,
                 cardType5,cardType6,cardType7,cardType8));
@@ -182,17 +182,39 @@ public class MainActivity extends AppCompatActivity {
     public void dealCards() {
         Card dealtCard;
         String cardText;
-        for (int i = 0; i < 8; i++) {
-            randomInt = random.nextInt(Deck.size());
-            dealtCard = Deck.get(randomInt);
+        while (Hand.size() < 8) {
+            dealtCard = Deck.get(0);
+            while (dealtCard.type.equals(bonusType)) {
+                BonusHand.add(dealtCard);
+                Deck.remove(dealtCard);
+                dealtCard = Deck.get(0);
+            }
+            Deck.remove(dealtCard);
             Hand.add(dealtCard);
-            Deck.remove(dealtCard);
             cardText = dealtCard.type + "\n" + dealtCard.value;
-            HandViews.get(i).setText(cardText);
-            randomInt = random.nextInt(Deck.size());
-            dealtCard = Deck.get(randomInt);
-            OpponentHand.add(dealtCard);
+            HandViews.get(Hand.size() - 1).setText(cardText);
+        }
+        while (OpponentHand.size() < 8) {
+            dealtCard = Deck.get(0);
+            while (dealtCard.type.equals(bonusType)) {
+                OpponentBonusHand.add(dealtCard);
+                Deck.remove(dealtCard);
+                dealtCard = Deck.get(0);
+            }
             Deck.remove(dealtCard);
+            OpponentHand.add(dealtCard);
+        }
+        if (BonusHand.size() > 0) {
+            bonusView.setVisibility(View.VISIBLE);
+            bonusCount = BonusHand.size();
+            bonusCountText = bonusCount + " " + bonusType + "(s)";
+            bonusView.setText(bonusCountText);
+        }
+        if (OpponentBonusHand.size() > 0) {
+            opponentBonusView.setVisibility(View.VISIBLE);
+            opponentBonusCount = OpponentBonusHand.size();
+            opponentBonusCountText = opponentBonusCount + " " + bonusType + "(s)";
+            opponentBonusView.setText(opponentBonusCountText);
         }
     }
 
@@ -221,8 +243,7 @@ public class MainActivity extends AppCompatActivity {
     public void takeDeck(View view) {
         if (!discardTaken && !deckPicked) {
             deckPicked = true;
-            int randomInt = random.nextInt(Deck.size());
-            TopOfDeck = Deck.get(randomInt);
+            TopOfDeck = Deck.get(0);
             Deck.remove(TopOfDeck);
             if (TopOfDeck.type.equals(bonusType)) {
                 BonusHand.add(TopOfDeck);
@@ -269,15 +290,13 @@ public class MainActivity extends AppCompatActivity {
                 Discarded = BlankCard;
                 discardView.setText(R.string.discards);
             } else {
-                int randomInt = random.nextInt(Deck.size());
-                TopOfDeck = Deck.get(randomInt);
+                TopOfDeck = Deck.get(0);
                 Deck.remove(TopOfDeck);
                 Deck.add(Discarded);
                 if (TopOfDeck.type.equals(bonusType)) {
                     OpponentBonusHand.add(TopOfDeck);
                     while (TopOfDeck.type.equals(bonusType)) {
-                        randomInt = random.nextInt(Deck.size());
-                        TopOfDeck = Deck.get(randomInt);
+                        TopOfDeck = Deck.get(0);
                         Deck.remove(TopOfDeck);
                         if (TopOfDeck.type.equals(bonusType)) {
                             OpponentBonusHand.add(TopOfDeck);
@@ -397,8 +416,8 @@ public class MainActivity extends AppCompatActivity {
             OpponentHandViews.get(i).setVisibility(View.VISIBLE);
         }
         for (Card card : Hand) {
-            for (Card cardtest : Hand) {
-                if (card.type.equals(cardtest.type) && card.value < cardtest.value) {
+            for (Card cardTest : Hand) {
+                if (card.type.equals(cardTest.type) && card.value < cardTest.value) {
                     playerScore -= card.value;
                     break;
                 }
@@ -406,8 +425,8 @@ public class MainActivity extends AppCompatActivity {
             playerScore += card.value;
         }
         for (Card card : OpponentHand) {
-            for (Card cardtest : OpponentHand) {
-                if (card.type.equals(cardtest.type) && card.value < cardtest.value) {
+            for (Card cardTest : OpponentHand) {
+                if (card.type.equals(cardTest.type) && card.value < cardTest.value) {
                     opponentScore -= card.value;
                     break;
                 }
