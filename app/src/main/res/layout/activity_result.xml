@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/bonusView"
+        android:id="@+id/bonusView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="2dp"
@@ -36,7 +36,7 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/bonusView"
+        app:layout_constraintTop_toBottomOf="@id/bonusView1"
         app:layout_constraintBottom_toTopOf="@+id/card2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/opponentCard1"
@@ -100,15 +100,14 @@
         android:id="@+id/resultView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="playGame"
+        android:onClick="startNew"
         android:text="@string/result"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/card4"
         app:layout_constraintBottom_toTopOf="@+id/card5"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card4" />
 
     <TextView
         android:id="@id/card5"
@@ -177,7 +176,7 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/card7"
-        app:layout_constraintBottom_toTopOf="@+id/opponentBonusView"
+        app:layout_constraintBottom_toTopOf="@+id/bonusView2"
         app:layout_constraintStart_toStartOf="@id/card7"
         app:layout_constraintEnd_toEndOf="@id/card7"
         />
@@ -327,7 +326,7 @@
         />
 
     <TextView
-        android:id="@+id/opponentBonusView"
+        android:id="@+id/bonusView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="2dp"

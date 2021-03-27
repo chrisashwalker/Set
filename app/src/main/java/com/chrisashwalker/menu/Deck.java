@@ -1,55 +1,37 @@
 package com.chrisashwalker.menu;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
 
-public class Deck
-{
-    String[] Types = {"Blue", "Green", "Indigo", "Navy", "Orange", "Red", "Violet", "Yellow"};
+public class Deck {
+    String[] types = {"Blue", "Green", "Indigo", "Navy", "Orange", "Red", "Violet", "Yellow"};
     int size = 40;
-    int bonuses = size % Types.length;
-    int countOfEachType = (size - bonuses) / Types.length;
-    ArrayDeque<Card> Cards;
-    public Deck()
-    {
-        this.build();
-        this.shuffle();
+    int bonuses = size % types.length;
+    int bonusValue = 3;
+    int countOfEachType = (size - bonuses) / types.length;
+    static ArrayList<Card> allCards;
+    ArrayDeque<Card> cards;
+
+    public Deck() {
+        build();
+        shuffle();
     }
 
-    private void build()
-    {
-        this.Cards = new ArrayDeque<>();
-        for (int i = 1; i <= this.countOfEachType; i++)
-        {
-            for (int j = 1; j <= this.Types.length - 1; j++)
-            {
-                Cards.add(new Card(this.Types[j], i));
+    private void build() {
+        allCards = new ArrayList<>();
+        for (int i = 1; i <= countOfEachType; i++) {
+            for (int j = 1; j <= types.length - 1; j++) {
+                allCards.add(new Card(types[j], i));
             }
         }
-        while (Cards.size() < this.size)
-        {
-            Cards.add(new Card("Bonus", 3));
+        while (allCards.size() < this.size) {
+            allCards.add(new Card("Bonus", bonusValue));
         }
     }
 
-    private void shuffle()
-    {
-        List<Card> OrderedCards = new ArrayList<>(Cards);
-        Collections.shuffle(OrderedCards);
-        Cards = new ArrayDeque<>(OrderedCards);
-    }
-
-    private static class Card
-    {
-        String type;
-        int value;
-
-        private Card(String type, int value)
-        {
-            this.type = type;
-            this.value = value;
-        }
+    private void shuffle() {
+        Collections.shuffle(allCards);
+        cards = new ArrayDeque<>(allCards);
     }
 }
