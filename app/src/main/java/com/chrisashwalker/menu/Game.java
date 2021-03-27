@@ -1,5 +1,6 @@
 package com.chrisashwalker.menu;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,13 @@ import java.util.Random;
 
 public class Game extends AppCompatActivity {
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_play);
+        startNew();
+    }
+
     public Deck deck;
     ArrayDeque<Card> discardPile;
     int playerCount;
@@ -23,10 +31,11 @@ public class Game extends AppCompatActivity {
     TextView finishView;
     HashMap<Integer, ArrayList<TextView>> playerViewLists;
     HashMap<Integer, TextView> playerBonusViews;
-    ConstraintLayout gameLayout = findViewById(R.id.gameLayout);
+    ConstraintLayout gameLayout;
     Random random;
 
     public void startNew() {
+        gameLayout = findViewById(R.id.gameLayout);
         playerCount = 2;
         deck = new Deck();
         discardPile = new ArrayDeque<>();
@@ -35,12 +44,9 @@ public class Game extends AppCompatActivity {
         while (players.size() < playerCount) {
             players.add(new Player());
         }
-        setContentView(R.layout.activity_play);
         findViews();
         activePlayer = players.get(0);
         activePlayer.human = true;
-        updateViews(activePlayer);
-        updateBonusViews(activePlayer);
         for (Player p : players) {
             p.hand = new Hand(deck);
             int highestPossibleScore = deck.types.size() * deck.countOfEachType + (deck.bonuses * deck.bonusValue);
@@ -50,6 +56,8 @@ public class Game extends AppCompatActivity {
                 p.goal = random.nextInt(highestPossibleScore);
             }
         }
+        updateViews(activePlayer);
+        updateBonusViews(activePlayer);
         testFinished(activePlayer);
     }
 
@@ -58,8 +66,10 @@ public class Game extends AppCompatActivity {
         discardView = findViewById(R.id.discardView);
         finishView = findViewById(R.id.finishView);
         playerViewLists = new HashMap<>();
+        playerBonusViews = new HashMap<>();
         for (Player p : players) {
             playerViewLists.put(p.id, new ArrayList<TextView>());
+            playerBonusViews.put(p.id, null);
         }
     }
 
@@ -68,7 +78,7 @@ public class Game extends AppCompatActivity {
         if (viewList != null) {
             if (viewList.isEmpty()) {
                 for (int i = 0; i < gameLayout.getChildCount(); i++) {
-                    if (gameLayout.getChildAt(i).getTag().equals(R.string.card)) {
+                    if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(getString(R.string.card))) {
                         viewList.add((TextView) gameLayout.getChildAt(i));
                     }
                 }
@@ -85,7 +95,7 @@ public class Game extends AppCompatActivity {
         TextView view = playerBonusViews.get(p.id);
         if (view == null) {
             for (int i = 0; i < gameLayout.getChildCount(); i++) {
-                if (gameLayout.getChildAt(i).getTag().equals(R.string.bonuses)) {
+                if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(getString(R.string.bonuses))) {
                     view = (TextView) gameLayout.getChildAt(i);
                     break;
                 }
@@ -125,7 +135,7 @@ public class Game extends AppCompatActivity {
             toggleFocus(view, true);
             activePlayer.hand.addCard(discardPile.pollFirst());
             discard = discardPile.peekFirst() instanceof Card ? discardPile.peekFirst() : null;
-            String viewText = discard != null ? discard.type + "\n" + discard.value : String.valueOf(R.string.discards);
+            String viewText = discard != null ? discard.type + "\n" + discard.value : getString(R.string.discards);
             ((TextView) view).setText(viewText);
         }
     }
@@ -135,7 +145,7 @@ public class Game extends AppCompatActivity {
         if (discard != null && activePlayer.hand.cards.size() == Hand.size) {
             activePlayer.hand.addCard(discardPile.pollFirst());
             discard = discardPile.peekFirst() instanceof Card ? discardPile.peekFirst() : null;
-            String viewText = discard != null ? discard.type + "\n" + discard.value : String.valueOf(R.string.discards);
+            String viewText = discard != null ? discard.type + "\n" + discard.value : getString(R.string.discards);
             discardView.setText(viewText);
         }
     }
@@ -147,6 +157,8 @@ public class Game extends AppCompatActivity {
                 activePlayer.hand.bonuses.add(deck.cards.pollFirst());
                 updateBonusViews(activePlayer);
             } else {
+                String viewText = deck.cards.peekFirst().type + "\n" + deck.cards.peekFirst().value;
+                ((TextView) deckView).setText(viewText);
                 activePlayer.hand.addCard(deck.cards.pollFirst());
                 toggleFocus(view, true);
             }
@@ -171,8 +183,10 @@ public class Game extends AppCompatActivity {
                 if (gameLayout.getChildAt(i).equals(view)) {
                     discardPile.offerFirst(activePlayer.hand.cards.get(i));
                     String viewText = activePlayer.hand.cards.get(i).type + "\n" + activePlayer.hand.cards.get(i).value;
-                    ((TextView) view).setText(viewText);
+                    ((TextView) discardView).setText(viewText);
                     activePlayer.hand.cards.remove(i);
+                    toggleFocus(discardView, false);
+                    toggleFocus(deckView, false);
                     break;
                 }
             }

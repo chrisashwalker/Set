@@ -1,6 +1,8 @@
 package com.chrisashwalker.menu;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,8 +15,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchGame(View view) {
-        Game game = new Game();
-        game.startNew();
+        Intent intent = new Intent(this, Game.class);
+        startActivity(intent);
     }
 
 }
