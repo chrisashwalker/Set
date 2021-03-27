@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintWidth_min="wrap"
         app:layout_constraintWidth_max="128dp"
-        android:onClick="takePile"
+        android:onClick="takeDiscard"
         android:padding="2dp"
         android:text="@string/discards"
         android:textAlignment="center"

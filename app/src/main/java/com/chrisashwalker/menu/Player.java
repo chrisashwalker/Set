@@ -5,11 +5,11 @@ public class Player {
     int id;
     boolean human;
     Hand hand;
+    int highScore;
     int goal;
 
     public Player() {
         this.id = nextId++;
-        this.hand = new Hand();
     }
 
 }

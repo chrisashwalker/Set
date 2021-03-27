@@ -7,12 +7,11 @@ public class Hand {
     public static int size = 8;
     int score;
     int bonusScore;
-    int highScore;
     ArrayList<Card> cards;
     ArrayList<Card> bonuses;
 
-    public Hand() {
-        deal();
+    public Hand(Deck deck) {
+        deal(deck);
     }
 
     public int getScore() {
@@ -25,9 +24,6 @@ public class Hand {
             for (Card b : bonuses) {
                 bonusScore += b.value;
             }
-        }
-        if (score + bonusScore > highScore) {
-            highScore = score + bonusScore;
         }
         return score + bonusScore;
     }
@@ -57,10 +53,14 @@ public class Hand {
         }
     }
 
-    public void draw() {
-        Card drawnCard = Game.deck.cards.pollFirst();
+    public void addCard(Card card) {
+        cards.add(card);
+    }
+
+    public void draw(Deck deck) {
+        Card drawnCard = deck.cards.pollFirst();
         if (drawnCard != null) {
-            if (drawnCard.type.equals("BONUS")) {
+            if (drawnCard.type.equals(deck.bonusType)) {
                 bonuses.add(drawnCard);
             } else {
                 cards.add(drawnCard);
@@ -68,11 +68,11 @@ public class Hand {
         }
     }
 
-    private void deal() {
+    private void deal(Deck deck) {
         cards = new ArrayList<>();
         bonuses = new ArrayList<>();
         while (cards.size() < Hand.size) {
-            draw();
+            draw(deck);
         }
     }
 

@@ -5,7 +5,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,33 +15,44 @@ import java.util.Random;
 
 public class Game extends AppCompatActivity {
 
-    public static Deck deck;
-    int playerCount = 2;
+    public Deck deck;
+    ArrayDeque<Card> discardPile;
+    int playerCount;
     ArrayList<Player> players;
+    Player activePlayer;
     TextView deckView;
     TextView discardView;
     TextView finishView;
     TextView bonusView;
     HashMap<Integer, ArrayList<TextView>> playerViewLists;
-    ConstraintLayout gameLayout = (ConstraintLayout) findViewById(R.id.gameLayout);
-    Random random = new Random();
+    ConstraintLayout gameLayout = findViewById(R.id.gameLayout);
+    Random random;
 
     public void startNew() {
+        playerCount = 2;
         deck = new Deck();
+        discardPile = new ArrayDeque<>();
+        random = new Random();
         players = new ArrayList<>();
         while (players.size() < playerCount) {
             players.add(new Player());
         }
         setContentView(R.layout.activity_play);
         findViews();
-        players.get(0).human = true;
-        updateViews(players.get(0));
+        activePlayer = players.get(0);
+        activePlayer.human = true;
+        updateViews(activePlayer);
+        updateBonusViews(activePlayer);
         for (Player p : players) {
-            if (!p.human) {
-                p.goal = random.nextInt(deck.types.length * deck.countOfEachType + (deck.bonuses * deck.bonusValue));
+            p.hand = new Hand(deck);
+            int highestPossibleScore = deck.types.size() * deck.countOfEachType + (deck.bonuses * deck.bonusValue);
+            if (p.human) {
+                p.goal = p.highScore + 1 <= highestPossibleScore ? p.highScore + 1 : p.highScore;
+            } else {
+                p.goal = random.nextInt(highestPossibleScore);
             }
         }
-        testFinished();
+        testFinished(activePlayer);
     }
 
     public void findViews() {
@@ -66,6 +79,9 @@ public class Game extends AppCompatActivity {
                 t.setText(text);
             }
         }
+    }
+
+    public void updateBonusViews(Player p) {
         if (p.hand.hasBonuses()) {
             bonusView.setVisibility(View.VISIBLE);
             String bonusText = "Bonus points: " + p.hand.bonusScore;
@@ -73,99 +89,119 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    public void testFinished(){
-        TestSet.clear();
-        RequiredMissing.clear();
-        RequiredMissing.addAll(RequiredSet);
-        for (Card card : Hand) {
-            TestSet.add(card.type);
+    public ArrayList<String> testFinished(Player p){
+        ArrayList<String> missingTypes = new ArrayList<>(deck.types);
+        for (Card c : p.hand.cards) {
+            missingTypes.remove(c.type);
         }
-        RequiredMissing.removeAll(TestSet);
-        if (RequiredMissing.isEmpty()) {
+        if (missingTypes.isEmpty() && p.hand.cards.size() == Hand.size) {
             finishView.setVisibility(View.VISIBLE);
         } else {
             finishView.setVisibility(View.INVISIBLE);
         }
+        return missingTypes;
     }
 
-    public void takePile(View view) {
-        if (TopOfDeck.value == 0 && Discarded.value > 0) {
-            discardView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFocused));
-            discardTaken = true;
+    public void toggleFocus(View view, boolean focus) {
+        if (focus) {
+            view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFocused));
+        } else {
+            view.setBackgroundResource(0);
+        }
+    }
+
+    public void takeDiscard(View view) {
+        Card discard = discardPile.peekFirst() instanceof Card ? discardPile.peekFirst() : null;
+        if (discard != null && activePlayer.hand.cards.size() == Hand.size) {
+            toggleFocus(view, true);
+            activePlayer.hand.addCard(discardPile.pollFirst());
+            discard = discardPile.peekFirst() instanceof Card ? discardPile.peekFirst() : null;
+            String viewText = discard != null ? discard.type + "\n" + discard.value : String.valueOf(R.string.discards);
+            ((TextView) view).setText(viewText);
+        }
+    }
+
+    public void takeDiscard() {
+        Card discard = discardPile.peekFirst() instanceof Card ? discardPile.peekFirst() : null;
+        if (discard != null && activePlayer.hand.cards.size() == Hand.size) {
+            activePlayer.hand.addCard(discardPile.pollFirst());
+            discard = discardPile.peekFirst() instanceof Card ? discardPile.peekFirst() : null;
+            String viewText = discard != null ? discard.type + "\n" + discard.value : String.valueOf(R.string.discards);
+            discardView.setText(viewText);
         }
     }
 
     public void takeDeck(View view) {
-        if (!discardTaken && !deckPicked) {
-            deckPicked = true;
-            TopOfDeck = Deck.get(0);
-            Deck.remove(TopOfDeck);
-            if (TopOfDeck.type.equals(bonusType)) {
-                BonusHand.add(TopOfDeck);
-                deckPicked = false;
-                takeDeck(deckView);
-                bonusView.setVisibility(View.VISIBLE);
+        Card topCard = deck.cards.peekFirst() instanceof Card ? deck.cards.peekFirst() : null;
+        if (topCard != null && activePlayer.hand.cards.size() == Hand.size) {
+            if (topCard.type.equals(deck.bonusType)) {
+                activePlayer.hand.bonuses.add(deck.cards.pollFirst());
+                updateBonusViews(activePlayer);
             } else {
-                bonusCount = BonusHand.size();
-                bonusCountText = bonusCount + " " + bonusType + "(s)";
-                TopOfDeckText = TopOfDeck.type + "\n" + TopOfDeck.value;
-                bonusView.setText(bonusCountText);
-                deckView.setText(TopOfDeckText);
-                deckView.setBackgroundColor(
-                        ContextCompat.getColor(this, R.color.colorFocused));
+                activePlayer.hand.addCard(deck.cards.pollFirst());
+                toggleFocus(view, true);
             }
-        } else if (deckPicked){
-            if (Discarded.value > 0) {
-                Deck.add(Discarded);
-            }
-            Discarded = TopOfDeck;
-            TopOfDeck = BlankCard;
-            deckView.setBackgroundResource(0);
-            deckView.setText(R.string.deck);
-            deckPicked = false;
-            opponentPlay();
         }
     }
 
-    public void opponentPlay() {
-        TestSet.clear();
-        RequiredMissing.clear();
-        RequiredMissing.addAll(RequiredSet);
-        opponentScoreTest = 0;
-        for (Card card : OpponentHand) {
-            TestSet.add(card.type);
-            opponentScoreTest += card.value;
+    public void takeDeck() {
+        Card topCard = deck.cards.peekFirst() instanceof Card ? deck.cards.peekFirst() : null;
+        if (topCard != null && activePlayer.hand.cards.size() == Hand.size) {
+            if (topCard.type.equals(deck.bonusType)) {
+                activePlayer.hand.bonuses.add(deck.cards.pollFirst());
+                updateBonusViews(activePlayer);
+            } else {
+                activePlayer.hand.addCard(deck.cards.pollFirst());
+            }
         }
-        RequiredMissing.removeAll(TestSet);
-        if (RequiredMissing.isEmpty() && opponentScoreTest >= opponentScoreGoal) {
+    }
+
+    public void discard(View view) {
+        if (activePlayer.hand.cards.size() > Hand.size) {
+            for (int i = 0; i < gameLayout.getChildCount(); i++) {
+                if (gameLayout.getChildAt(i).equals(view)) {
+                    discardPile.offerFirst(activePlayer.hand.cards.get(i));
+                    String viewText = activePlayer.hand.cards.get(i).type + "\n" + activePlayer.hand.cards.get(i).value;
+                    ((TextView) view).setText(viewText);
+                    activePlayer.hand.cards.remove(i);
+                    break;
+                }
+            }
+            switchPlayer();
+        }
+    }
+
+    public void switchPlayer() {
+        int nextPlayer = players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0;
+        activePlayer = players.get(nextPlayer);
+        if (!activePlayer.human) {
+            autoPlay();
+        }
+    }
+
+    public void autoPlay() {
+        ArrayList<String> missingTypes = testFinished(activePlayer);
+        if (missingTypes.isEmpty() && activePlayer.goal >= activePlayer.hand.getScore()) {
             finishGame(finishView);
         } else {
-            if (RequiredMissing.contains(Discarded.type)) {
-                OpponentHand.add(Discarded);
-                Discarded = BlankCard;
-                discardView.setText(R.string.discards);
-            } else {
-                TopOfDeck = Deck.get(0);
-                Deck.remove(TopOfDeck);
-                Deck.add(Discarded);
-                if (TopOfDeck.type.equals(bonusType)) {
-                    OpponentBonusHand.add(TopOfDeck);
-                    while (TopOfDeck.type.equals(bonusType)) {
-                        TopOfDeck = Deck.get(0);
-                        Deck.remove(TopOfDeck);
-                        if (TopOfDeck.type.equals(bonusType)) {
-                            OpponentBonusHand.add(TopOfDeck);
-                        }
+            Card discard = discardPile.peekFirst() instanceof Card ? discardPile.peekFirst() : null;
+            if (discard != null) {
+                if (missingTypes.contains(discard.type)) {
+                    takeDiscard();
+                } else {
+                    takeDeck();
+                }
+            }
+            if (activePlayer.hand.cards.size() > Hand.size) {
+                Card lowestValueCard = null;
+                for (Card c : activePlayer.hand.cards) {
+                    if (lowestValueCard == null) {
+                        lowestValueCard = c;
+                        continue;
                     }
+                    if (c.type)
+
                 }
-                if (OpponentBonusHand.size() > 0){
-                    opponentBonusCount = OpponentBonusHand.size();
-                    opponentBonusCountText = opponentBonusCount + " " + bonusType + "(s)";
-                    opponentBonusView.setText(opponentBonusCountText);
-                    opponentBonusView.setVisibility(View.VISIBLE);
-                }
-                OpponentHand.add(TopOfDeck);
-                TopOfDeck = BlankCard;
             }
             TestSet.clear();
             for (Card card : OpponentHand) {
@@ -190,39 +226,7 @@ public class Game extends AppCompatActivity {
             DiscardedText = Discarded.type + "\n" + Discarded.value;
             discardView.setText(DiscardedText);
         }
-    }
-
-    public void replaceCard(View view) {
-        String cardId = view.getResources().getResourceEntryName(view.getId());
-        int cardIndex = Integer.parseInt(cardId.replace("card","")) - 1;
-        if (deckPicked) {
-            if (Discarded.value > 0) {
-                Deck.add(Discarded);
-            }
-            Discarded = Hand.get(cardIndex);
-            Hand.set(cardIndex, TopOfDeck);
-            CardText = Hand.get(cardIndex).type + "\n" + Hand.get(cardIndex).value;
-            HandViews.get(cardIndex).setText(CardText);
-            TopOfDeck = BlankCard;
-            deckView.setBackgroundResource(0);
-            deckView.setText(R.string.deck);
-            DiscardedText = Discarded.type + "\n" + Discarded.value;
-            discardView.setText(DiscardedText);
-            deckPicked = false;
-            opponentPlay();
-        } else if (discardTaken) {
-            Card replacedCard = Hand.get(cardIndex);
-            Hand.set(cardIndex, Discarded);
-            Discarded = replacedCard;
-            CardText = Hand.get(cardIndex).type + "\n" + Hand.get(cardIndex).value;
-            HandViews.get(cardIndex).setText(CardText);
-            discardView.setBackgroundResource(0);
-            DiscardedText = Discarded.type + "\n" + Discarded.value;
-            discardView.setText(DiscardedText);
-            discardTaken = false;
-            opponentPlay();
-        }
-        testFinished();
+        switchPlayer();
     }
 
     public void finishGame(View view) {

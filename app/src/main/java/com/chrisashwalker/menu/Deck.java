@@ -1,15 +1,17 @@
 package com.chrisashwalker.menu;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
 
 public class Deck {
-    String[] types = {"Blue", "Green", "Indigo", "Navy", "Orange", "Red", "Violet", "Yellow"};
+    final ArrayList<String> types = new ArrayList<>(Arrays.asList("Blue", "Green", "Indigo", "Navy", "Orange", "Red", "Violet", "Yellow"));
     int size = 40;
-    int bonuses = size % types.length;
+    int bonuses = size % types.size();
     int bonusValue = 3;
-    int countOfEachType = (size - bonuses) / types.length;
+    int countOfEachType = (size - bonuses) / types.size();
+    String bonusType = "Bonus";
     static ArrayList<Card> allCards;
     ArrayDeque<Card> cards;
 
@@ -21,12 +23,12 @@ public class Deck {
     private void build() {
         allCards = new ArrayList<>();
         for (int i = 1; i <= countOfEachType; i++) {
-            for (int j = 1; j <= types.length - 1; j++) {
-                allCards.add(new Card(types[j], i));
+            for (int j = 1; j <= types.size() - 1; j++) {
+                allCards.add(new Card(types.get(j), i));
             }
         }
         while (allCards.size() < this.size) {
-            allCards.add(new Card("Bonus", bonusValue));
+            allCards.add(new Card(bonusType, bonusValue));
         }
     }
 
