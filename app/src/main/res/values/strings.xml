@@ -7,4 +7,5 @@
     <string name="result">Result</string>
     <string name="deck">Deck\n</string>
     <string name="bonuses">Bonuses</string>
+    <string name="opponentCard">opponentCard</string>
 </resources>
