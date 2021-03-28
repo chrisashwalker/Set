@@ -43,6 +43,10 @@ public class Deck {
         return cards;
     }
 
+    public void addCard(Card c) {
+        cards.offerLast(c);
+    }
+
     public ArrayList<String> getCardTypes() {
         return cardTypes;
     }
