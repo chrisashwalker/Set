@@ -6,14 +6,16 @@ import java.util.ArrayList;
 import java.util.ArrayDeque;
 
 public class Deck {
-    final ArrayList<String> types = new ArrayList<>(Arrays.asList("Blue", "Green", "Indigo", "Navy", "Orange", "Red", "Violet", "Yellow"));
-    int size = 40;
-    int bonuses = size % types.size();
-    int bonusValue = 3;
-    int countOfEachType = (size - bonuses) / types.size();
-    String bonusType = "Bonus";
-    static ArrayList<Card> allCards;
-    ArrayDeque<Card> cards;
+
+    private ArrayList<Card> allPossibleCards;
+    private ArrayDeque<Card> cards;
+    private ArrayList<String> cardTypes = new ArrayList<>(
+            Arrays.asList("Blue", "Green", "Indigo", "Navy", "Orange", "Red", "Violet", "Yellow"));
+    private int capacity = 40;
+    private String bonusType = "Bonus";
+    private int bonusValue = 3;
+    private int bonusCount = capacity % cardTypes.size();
+    private int countOfEachType = (capacity - bonusCount) / cardTypes.size();
 
     public Deck() {
         build();
@@ -21,19 +23,48 @@ public class Deck {
     }
 
     private void build() {
-        allCards = new ArrayList<>();
+        allPossibleCards = new ArrayList<>();
         for (int i = 1; i <= countOfEachType; i++) {
-            for (int j = 1; j <= types.size() - 1; j++) {
-                allCards.add(new Card(types.get(j), i));
+            for (int j = 1; j <= cardTypes.size() - 1; j++) {
+                allPossibleCards.add(new Card(cardTypes.get(j), i));
             }
         }
-        while (allCards.size() < this.size) {
-            allCards.add(new Card(bonusType, bonusValue));
+        while (allPossibleCards.size() < this.capacity) {
+            allPossibleCards.add(new Card(bonusType, bonusValue));
         }
     }
 
     private void shuffle() {
-        Collections.shuffle(allCards);
-        cards = new ArrayDeque<>(allCards);
+        Collections.shuffle(allPossibleCards);
+        cards = new ArrayDeque<>(allPossibleCards);
     }
+
+    public ArrayDeque<Card> getCards() {
+        return cards;
+    }
+
+    public ArrayList<String> getCardTypes() {
+        return cardTypes;
+    }
+
+    public int getBonusCount() {
+        return bonusCount;
+    }
+
+    public int getCountOfEachType() {
+        return countOfEachType;
+    }
+
+    public String getBonusType() {
+        return bonusType;
+    }
+
+    public int getHighestPossibleScore() {
+        return getCardTypes().size() * getCountOfEachType() + (getBonusCount() * getBonusValue());
+    }
+
+    public int getBonusValue() {
+        return bonusValue;
+    }
+
 }
