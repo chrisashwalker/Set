@@ -28,8 +28,36 @@ public class Hand {
         cards.remove(card);
     }
 
-    public void removeCard(int index) {
-        cards.remove(index);
+    public static ArrayList<String> findDuplicateCardTypes(ArrayList<Card> cards) {
+        ArrayList<String> foundTypes = new ArrayList<>();
+        ArrayList<String> duplicateTypes = new ArrayList<>();
+        for (Card c : cards) {
+            if (!foundTypes.contains(c.getType())) {
+                foundTypes.add(c.getType());
+            } else {
+                duplicateTypes.add(c.getType());
+            }
+        }
+        return duplicateTypes;
+    }
+
+    public ArrayList<String> findDuplicateCardTypes() {
+        return findDuplicateCardTypes(getCards());
+    }
+
+    public static Card findLowestValueCard(ArrayList<Card> cards) {
+        Card lowestValueCard = null;
+        ArrayList<String> duplicateTypes = findDuplicateCardTypes(cards);
+        for (Card c : cards) {
+            if (duplicateTypes.contains(c.getType()) && (lowestValueCard == null || lowestValueCard.getValue() > c.getValue())) {
+                lowestValueCard = c;
+            }
+        }
+        return lowestValueCard;
+    }
+
+    public Card findLowestValueCard() {
+        return findLowestValueCard(getCards());
     }
 
     public boolean hasBonuses() {
@@ -50,7 +78,11 @@ public class Hand {
 
     public int getTotalScore() {
         int score = 0;
-        for (Card c : getCards()) {
+        ArrayList<Card> scoringCards = new ArrayList<>(getCards());
+        while (findLowestValueCard(scoringCards) != null) {
+            scoringCards.remove(findLowestValueCard(scoringCards));
+        }
+        for (Card c : scoringCards) {
             score += c.getValue();
         }
         return score + getBonusScore();

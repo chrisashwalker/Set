@@ -9,12 +9,16 @@ public class Player {
     private int id;
     private boolean isHuman;
     private int goal;
-    private int highScore;
+    private static int highScore;
     private Hand hand;
 
     public Player(Deck deck) {
         this.id = nextId++;
         setHand(new Hand(deck));
+    }
+
+    public static void resetNextId() {
+        nextId = 1;
     }
 
     public int getId() {
@@ -45,12 +49,12 @@ public class Player {
         }
     }
 
-    public int getHighScore() {
+    public static int getHighScore() {
         return highScore;
     }
 
-    public void setHighScore(int highScore) {
-        this.highScore = highScore;
+    public static void setHighScore(int score) {
+        highScore = score;
     }
 
     public Hand getHand() {

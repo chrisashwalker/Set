@@ -13,6 +13,10 @@ public class Card {
         this.value = value;
     }
 
+    public static void resetNextId() {
+        nextId = 1;
+    }
+
     public int getId() {
         return id;
     }

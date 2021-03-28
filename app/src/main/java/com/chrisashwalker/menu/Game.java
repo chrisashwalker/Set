@@ -23,6 +23,8 @@ public class Game extends AppCompatActivity {
     private TextView deckView;
     private TextView discardView;
     private TextView finishView;
+    private TextView scoreView;
+    private TextView highScoreView;
     private HashMap<Integer, ArrayList<TextView>> playerViewLists;
     private HashMap<Integer, TextView> playerBonusViews;
 
@@ -37,6 +39,8 @@ public class Game extends AppCompatActivity {
     }
 
     private void startNew() {
+        Player.resetNextId();
+        Card.resetNextId();
         deck = new Deck();
         discards = new ArrayDeque<>();
         int humanPlayerCount = 1;
@@ -53,6 +57,8 @@ public class Game extends AppCompatActivity {
         deckView = findViewById(R.id.deckView);
         discardView = findViewById(R.id.discardView);
         finishView = findViewById(R.id.finishView);
+        scoreView = findViewById(R.id.score);
+        highScoreView = findViewById(R.id.highScore);
         playerViewLists = new HashMap<>();
         playerBonusViews = new HashMap<>();
         for (Player p : players) {
@@ -78,6 +84,10 @@ public class Game extends AppCompatActivity {
             t.setTag(card);
         }
         updateBonusViews(p);
+        String scoreText = getString(R.string.score) + p.getHand().getTotalScore();
+        scoreView.setText(scoreText);
+        String highScoreText = getString(R.string.highScore) + Player.getHighScore();
+        highScoreView.setText(highScoreText);
     }
 
     private void updateBonusViews(Player p) {
@@ -92,9 +102,37 @@ public class Game extends AppCompatActivity {
         }
         if (p.getHand().hasBonuses() && view != null) {
             view.setVisibility(View.VISIBLE);
-            String bonusText = "Bonus points: " + p.getHand().getBonusScore();
+            String bonusText = R.string.bonuses + ": " + p.getHand().getBonusScore();
             view.setText(bonusText);
         }
+    }
+
+    private void updateResultViews(Player p) {
+        String cardTag;
+        if (p.equals(players.get(0))) {
+            cardTag = getString(R.string.card);
+        } else if (p.equals(players.get(1))) {
+            cardTag = getString(R.string.opponentCard);
+        } else {
+            return;
+        }
+        setContentView(R.layout.activity_result);
+        ArrayList<TextView> viewList = playerViewLists.get(p.getId());
+        assert viewList != null;
+        if (viewList.isEmpty()) {
+            for (int i = 0; i < gameLayout.getChildCount(); i++) {
+                if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(cardTag)) {
+                    viewList.add((TextView) gameLayout.getChildAt(i));
+                }
+            }
+        }
+        for (TextView t : viewList) {
+            Card card = p.getCards().get(viewList.indexOf(t));
+            String text = card.getType() + "\n" + card.getValue();
+            t.setText(text);
+            t.setTag(card);
+        }
+        updateBonusViews(p);
     }
 
     private void toggleFocus(View view, boolean focus) {
@@ -124,12 +162,14 @@ public class Game extends AppCompatActivity {
         updateViews(activePlayer);
         if (!activePlayer.checkIsHuman()) {
             autoPlay();
+        } else {
+            findMissingCardTypes(activePlayer);
         }
     }
 
     public void takeDeck(View view) {
         Card topCard = deck.getCards().peekFirst() instanceof Card ? deck.getCards().peekFirst() : null;
-        if (topCard != null && !deckTaken && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
+        if (topCard != null && !deckTaken && !discardTaken && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
             if (topCard.getType().equals(deck.getBonusType())) {
                 activePlayer.getHand().addBonus(deck.getCards().pollFirst());
                 updateBonusViews(activePlayer);
@@ -153,8 +193,6 @@ public class Game extends AppCompatActivity {
             discardTaken = true;
             toggleFocus(view, true);
             activePlayer.getHand().addCard(discards.pollFirst());
-        } else if (discardTaken) {
-            discard(activePlayer.getCards().get(activePlayer.getHand().getCapacity()));
         }
     }
 
@@ -199,32 +237,20 @@ public class Game extends AppCompatActivity {
                 takeDeck(deckView);
             }
             if (activePlayer.getCards().size() > activePlayer.getHand().getCapacity()) {
-                ArrayList<String> foundTypes = new ArrayList<>();
-                Card lowestValueCard = null;
-                for (Card c : activePlayer.getCards()) {
-                    if (lowestValueCard == null) {
-                        lowestValueCard = c;
-                    }
-                    if (!foundTypes.contains(c.getType())) {
-                        foundTypes.add(c.getType());
-                    } else if (c.getValue() <= lowestValueCard.getValue()) {
-                        lowestValueCard = c;
-                    }
-                }
+                Card lowestValueCard = activePlayer.getHand().findLowestValueCard();
                 discard(lowestValueCard);
             }
         }
-        switchPlayer();
     }
 
     public void finishGame(View view) {
-        setContentView(R.layout.activity_result);
         String result;
         StringBuilder equalScorers = new StringBuilder();
         StringBuilder scores = new StringBuilder();
         ArrayList<Player> highestScorers = new ArrayList<>();
+        playerBonusViews.clear();
         for (Player p : players) {
-            updateViews(p);
+            updateResultViews(p);
             if (highestScorers.isEmpty() || p.getHand().getTotalScore() > highestScorers.get(0).getHand().getTotalScore()) {
                 highestScorers.clear();
                 highestScorers.add(p);
@@ -237,12 +263,15 @@ public class Game extends AppCompatActivity {
             scores.append("P").append(p.getId()).append(":").append(p.getHand().getTotalScore()).append("; ");
         }
         if (highestScorers.size() > 1) {
-            result = "There's a draw. " + equalScorers;
+            result = "Draw! " + equalScorers + " scored " + highestScorers.get(0).getHand().getTotalScore() + ".";
         } else {
-            result = "P " + highestScorers.get(0).getId() + " wins!";
+            result = "P" + highestScorers.get(0).getId() + " wins with " + highestScorers.get(0).getHand().getTotalScore() + " points!";
         }
         TextView resultView = findViewById(R.id.resultView);
         resultView.setText(result);
+        if (highestScorers.get(0).checkIsHuman() && highestScorers.get(0).getHand().getTotalScore() > Player.getHighScore()) {
+            Player.setHighScore(highestScorers.get(0).getHand().getTotalScore());
+        }
     }
 
     public void launchMainMenu(View view) {

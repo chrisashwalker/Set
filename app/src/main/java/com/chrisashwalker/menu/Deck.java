@@ -25,7 +25,7 @@ public class Deck {
     private void build() {
         allPossibleCards = new ArrayList<>();
         for (int i = 1; i <= countOfEachType; i++) {
-            for (int j = 1; j <= cardTypes.size() - 1; j++) {
+            for (int j = 0; j <= cardTypes.size() - 1; j++) {
                 allPossibleCards.add(new Card(cardTypes.get(j), i));
             }
         }

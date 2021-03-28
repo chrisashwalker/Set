@@ -9,6 +9,40 @@
     tools:context=".Game">
 
     <TextView
+        android:id="@+id/score"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:text="@string/score"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/card1"
+        app:layout_constraintEnd_toStartOf="@+id/discardView"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:layout_constraintWidth_max="128dp"
+        app:layout_constraintWidth_min="wrap" />
+
+    <TextView
+        android:id="@+id/highScore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:text="@string/highScore"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/card2"
+        app:layout_constraintStart_toEndOf="@+id/discardView"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:layout_constraintWidth_max="128dp"
+        app:layout_constraintWidth_min="wrap" />
+
+    <TextView
         android:id="@+id/discardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
