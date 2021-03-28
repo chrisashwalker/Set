@@ -20,6 +20,7 @@ public class Game extends AppCompatActivity {
     private Player activePlayer;
 
     private ConstraintLayout gameLayout;
+    private ConstraintLayout resultLayout;
     private TextView deckView;
     private TextView discardView;
     private TextView finishView;
@@ -116,13 +117,12 @@ public class Game extends AppCompatActivity {
         } else {
             return;
         }
-        setContentView(R.layout.activity_result);
         ArrayList<TextView> viewList = playerViewLists.get(p.getId());
         assert viewList != null;
         if (viewList.isEmpty()) {
-            for (int i = 0; i < gameLayout.getChildCount(); i++) {
-                if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(cardTag)) {
-                    viewList.add((TextView) gameLayout.getChildAt(i));
+            for (int i = 0; i < resultLayout.getChildCount(); i++) {
+                if (resultLayout.getChildAt(i).getTag() != null && resultLayout.getChildAt(i).getTag().equals(cardTag)) {
+                    viewList.add((TextView) resultLayout.getChildAt(i));
                 }
             }
         }
@@ -130,7 +130,6 @@ public class Game extends AppCompatActivity {
             Card card = p.getCards().get(viewList.indexOf(t));
             String text = card.getType() + "\n" + card.getValue();
             t.setText(text);
-            t.setTag(card);
         }
         updateBonusViews(p);
     }
@@ -248,8 +247,11 @@ public class Game extends AppCompatActivity {
         StringBuilder equalScorers = new StringBuilder();
         StringBuilder scores = new StringBuilder();
         ArrayList<Player> highestScorers = new ArrayList<>();
-        playerBonusViews.clear();
+        setContentView(R.layout.activity_result);
+        resultLayout = findViewById(R.id.resultLayout);
         for (Player p : players) {
+            playerViewLists.put(p.getId(), new ArrayList<TextView>());
+            playerBonusViews.put(p.getId(), null);
             updateResultViews(p);
             if (highestScorers.isEmpty() || p.getHand().getTotalScore() > highestScorers.get(0).getHand().getTotalScore()) {
                 highestScorers.clear();
