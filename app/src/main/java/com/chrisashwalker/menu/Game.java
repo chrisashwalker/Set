@@ -42,8 +42,7 @@ public class Game extends AppCompatActivity {
         activePlayer = players.get(0);
         findViews();
         updateViews(activePlayer);
-        updateBonusViews(activePlayer);
-        checkFullSetObtained(activePlayer);
+        findMissingCardTypes(activePlayer);
     }
 
     private void findViews() {
@@ -70,10 +69,12 @@ public class Game extends AppCompatActivity {
             }
         }
         for (TextView t : viewList) {
-            String text = p.getCards().get(viewList.indexOf(t)).getType() + "\n" + p.getCards().get(viewList.indexOf(t)).getValue();
+            Card card = p.getCards().get(viewList.indexOf(t));
+            String text = card.getType() + "\n" + card.getValue();
             t.setText(text);
-            t.setTag(p.getCards().get(viewList.indexOf(t)));
+            t.setTag(card);
         }
+        updateBonusViews(p);
     }
 
     private void updateBonusViews(Player p) {
@@ -93,7 +94,15 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    private ArrayList<String> checkFullSetObtained(Player p){
+    private void toggleFocus(View view, boolean focus) {
+        if (focus) {
+            view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFocused));
+        } else {
+            view.setBackgroundResource(0);
+        }
+    }
+
+    private ArrayList<String> findMissingCardTypes(Player p){
         ArrayList<String> missingTypes = new ArrayList<>(deck.getCardTypes());
         for (Card c : p.getCards()) {
             missingTypes.remove(c.getType());
@@ -106,15 +115,33 @@ public class Game extends AppCompatActivity {
         return missingTypes;
     }
 
-    private void toggleFocus(View view, boolean focus) {
-        if (focus) {
-            view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFocused));
-        } else {
-            view.setBackgroundResource(0);
+    private void switchPlayer() {
+        int nextPlayer = players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0;
+        activePlayer = players.get(nextPlayer);
+        updateViews(activePlayer);
+        if (!activePlayer.checkIsHuman()) {
+            autoPlay();
         }
     }
 
-    private void takeDiscard(View view) {
+    public void takeDeck(View view) {
+        Card topCard = deck.getCards().peekFirst() instanceof Card ? deck.getCards().peekFirst() : null;
+        if (topCard != null && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
+            if (topCard.getType().equals(deck.getBonusType())) {
+                activePlayer.getHand().addBonus(deck.getCards().pollFirst());
+                updateBonusViews(activePlayer);
+            } else {
+                activePlayer.getHand().addCard(deck.getCards().pollFirst());
+                if (view != null) {
+                    String viewText = topCard.getType() + "\n" + topCard.getValue();
+                    ((TextView) view).setText(viewText);
+                    toggleFocus(view, true);
+                }
+            }
+        }
+    }
+
+    public void takeDiscard(View view) {
         Card discard = discards.peekFirst() instanceof Card ? discards.peekFirst() : null;
         if (discard != null && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
             toggleFocus(view, true);
@@ -125,50 +152,13 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    private void takeDiscard() {
-        Card discard = discards.peekFirst() instanceof Card ? discards.peekFirst() : null;
-        if (discard != null && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
-            activePlayer.getHand().addCard(discards.pollFirst());
-            discard = discards.peekFirst() instanceof Card ? discards.peekFirst() : null;
-            String viewText = discard != null ? discard.getType() + "\n" + discard.getValue() : getString(R.string.discards);
-            discardView.setText(viewText);
-        }
-    }
-
-    private void takeDeck(View view) {
-        Card topCard = deck.getCards().peekFirst() instanceof Card ? deck.getCards().peekFirst() : null;
-        if (topCard != null && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
-            if (topCard.getType().equals(deck.getBonusType())) {
-                activePlayer.getHand().addBonus(deck.getCards().pollFirst());
-                updateBonusViews(activePlayer);
-            } else {
-                String viewText = topCard.getType() + "\n" + topCard.getValue();
-                ((TextView) deckView).setText(viewText);
-                activePlayer.getHand().addCard(deck.getCards().pollFirst());
-                toggleFocus(view, true);
-            }
-        }
-    }
-
-    private void takeDeck() {
-        Card topCard = deck.getCards().peekFirst() instanceof Card ? deck.getCards().peekFirst() : null;
-        if (topCard != null && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
-            if (topCard.getType().equals(deck.getBonusType())) {
-                activePlayer.getHand().addBonus(deck.getCards().pollFirst());
-                updateBonusViews(activePlayer);
-            } else {
-                activePlayer.getHand().addCard(deck.getCards().pollFirst());
-            }
-        }
-    }
-
-    private void discard(View view) {
+    public void discard(View view) {
         if (activePlayer.getCards().size() > activePlayer.getHand().getCapacity()) {
             for (int i = 0; i < gameLayout.getChildCount(); i++) {
                 if (gameLayout.getChildAt(i).equals(view)) {
                     discards.offerFirst(activePlayer.getCards().get(i));
                     String viewText = activePlayer.getCards().get(i).getType() + "\n" + activePlayer.getCards().get(i).getValue();
-                    ((TextView) discardView).setText(viewText);
+                    discardView.setText(viewText);
                     activePlayer.getHand().removeCard(i);
                     toggleFocus(discardView, false);
                     toggleFocus(deckView, false);
@@ -176,7 +166,6 @@ public class Game extends AppCompatActivity {
                 }
             }
             switchPlayer();
-            updateViews(activePlayer);
         }
     }
 
@@ -186,54 +175,47 @@ public class Game extends AppCompatActivity {
             String viewText = c.getType() + "\n" + c.getValue();
             discardView.setText(viewText);
             activePlayer.getHand().removeCard(c);
+            toggleFocus(discardView, false);
+            toggleFocus(deckView, false);
             switchPlayer();
-            updateViews(activePlayer);
-        }
-    }
-
-    private void switchPlayer() {
-        int nextPlayer = players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0;
-        activePlayer = players.get(nextPlayer);
-        if (!activePlayer.checkIsHuman()) {
-            autoPlay();
         }
     }
 
     private void autoPlay() {
-        ArrayList<String> missingTypes = checkFullSetObtained(activePlayer);
+        ArrayList<String> missingTypes = findMissingCardTypes(activePlayer);
         if (missingTypes.isEmpty() && activePlayer.getGoal() >= activePlayer.getHand().getTotalScore()) {
             finishGame(finishView);
         } else {
             Card discard = discards.peekFirst() instanceof Card ? discards.peekFirst() : null;
             if (discard != null) {
                 if (missingTypes.contains(discard.getType())) {
-                    takeDiscard();
+                    takeDiscard(discardView);
                 } else {
-                    takeDeck();
+                    takeDeck(deckView);
                 }
+            } else {
+                takeDeck(deckView);
             }
             if (activePlayer.getCards().size() > activePlayer.getHand().getCapacity()) {
                 ArrayList<String> foundTypes = new ArrayList<>();
                 Card lowestValueCard = null;
                 for (Card c : activePlayer.getCards()) {
-                    foundTypes.add(c.getType());
                     if (lowestValueCard == null) {
                         lowestValueCard = c;
-                        continue;
                     }
-                    if (foundTypes.contains(c.getType()) && c.getValue() <= lowestValueCard.getValue()) {
+                    if (!foundTypes.contains(c.getType())) {
+                        foundTypes.add(c.getType());
+                    } else if (c.getValue() <= lowestValueCard.getValue()) {
                         lowestValueCard = c;
                     }
                 }
                 discard(lowestValueCard);
             }
-
         }
         switchPlayer();
-        updateViews(activePlayer);
     }
 
-    private void finishGame(View view) {
+    public void finishGame(View view) {
         setContentView(R.layout.activity_result);
         String result;
         StringBuilder equalScorers = new StringBuilder();
@@ -241,7 +223,6 @@ public class Game extends AppCompatActivity {
         ArrayList<Player> highestScorers = new ArrayList<>();
         for (Player p : players) {
             updateViews(p);
-            updateBonusViews(p);
             if (highestScorers.isEmpty() || p.getHand().getTotalScore() > highestScorers.get(0).getHand().getTotalScore()) {
                 highestScorers.clear();
                 highestScorers.add(p);
@@ -262,9 +243,9 @@ public class Game extends AppCompatActivity {
         resultView.setText(result);
     }
 
-    protected void launchMainMenu(View view) {
+    public void launchMainMenu(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-    
+
 }
