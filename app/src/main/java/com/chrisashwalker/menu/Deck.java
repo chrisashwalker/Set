@@ -4,13 +4,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 
 public class Deck {
 
     private ArrayList<Card> allPossibleCards;
     private ArrayDeque<Card> cards;
     private ArrayList<String> cardTypes = new ArrayList<>(
-            Arrays.asList("Blue", "Green", "Indigo", "Navy", "Orange", "Red", "Violet", "Yellow"));
+            Arrays.asList("Red", "Orange", "Yellow", "Green", "LightBlue", "Blue", "Navy", "Violet"));
+    private HashMap<String, Integer> cardBackgrounds;
     private int capacity = 40;
     private String bonusType = "Bonus";
     private int bonusValue = 3;
@@ -18,6 +20,7 @@ public class Deck {
     private int countOfEachType = (capacity - bonusCount) / cardTypes.size();
 
     public Deck() {
+        initialiseBackgrounds();
         build();
         shuffle();
     }
@@ -69,6 +72,22 @@ public class Deck {
 
     public int getBonusValue() {
         return bonusValue;
+    }
+
+    public void initialiseBackgrounds() {
+        cardBackgrounds = new HashMap<>();
+        cardBackgrounds.put("Red", R.color.colorRed);
+        cardBackgrounds.put("Orange", R.color.colorOrange);
+        cardBackgrounds.put("Yellow", R.color.colorYellow);
+        cardBackgrounds.put("Green", R.color.colorGreen);
+        cardBackgrounds.put("LightBlue", R.color.colorLightBlue);
+        cardBackgrounds.put("Blue", R.color.colorBlue);
+        cardBackgrounds.put("Navy", R.color.colorNavy);
+        cardBackgrounds.put("Violet", R.color.colorViolet);
+    }
+
+    public Integer getCardBackgrounds(Card c) {
+        return cardBackgrounds.get(c.getType());
     }
 
 }

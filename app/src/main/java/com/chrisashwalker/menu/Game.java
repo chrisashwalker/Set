@@ -80,9 +80,10 @@ public class Game extends AppCompatActivity {
         }
         for (TextView t : viewList) {
             Card card = p.getCards().get(viewList.indexOf(t));
-            String text = card.getType() + "\n" + card.getValue();
+            String text = String.valueOf(card.getValue());
             t.setText(text);
             t.setTag(card);
+            t.setBackgroundColor(ContextCompat.getColor(this, deck.getCardBackgrounds(card)));
         }
         updateBonusViews(p);
         String scoreText = getString(R.string.score) + p.getHand().getTotalScore();
@@ -128,19 +129,20 @@ public class Game extends AppCompatActivity {
         }
         for (TextView t : viewList) {
             Card card = p.getCards().get(viewList.indexOf(t));
-            String text = card.getType() + "\n" + card.getValue();
+            String text = String.valueOf(card.getValue());
             t.setText(text);
+            t.setBackgroundColor(ContextCompat.getColor(this, deck.getCardBackgrounds(card)));
         }
         updateBonusViews(p);
     }
 
-    private void toggleFocus(View view, boolean focus) {
-        if (focus) {
-            view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFocused));
-        } else {
-            view.setBackgroundResource(0);
-        }
-    }
+    //private void toggleFocus(View view, boolean focus) {
+        //if (focus) {
+            //view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFocused));
+        //} else {
+            //view.setBackgroundResource(0);
+        //}
+    //}
 
     private ArrayList<String> findMissingCardTypes(Player p){
         ArrayList<String> missingTypes = new ArrayList<>(deck.getCardTypes());
@@ -178,7 +180,8 @@ public class Game extends AppCompatActivity {
                 if (view != null) {
                     String viewText = topCard.getType() + "\n" + topCard.getValue();
                     ((TextView) view).setText(viewText);
-                    toggleFocus(view, true);
+                    view.setBackgroundColor(ContextCompat.getColor(this, deck.getCardBackgrounds(topCard)));
+                    //toggleFocus(view, true);
                 }
             }
         } else if (deckTaken) {
@@ -190,7 +193,7 @@ public class Game extends AppCompatActivity {
         Card discard = discards.peekFirst() instanceof Card ? discards.peekFirst() : null;
         if (discard != null && !discardTaken && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
             discardTaken = true;
-            toggleFocus(view, true);
+            //toggleFocus(view, true);
             activePlayer.getHand().addCard(discards.pollFirst());
         }
     }
@@ -212,10 +215,11 @@ public class Game extends AppCompatActivity {
             String viewText = c.getType() + "\n" + c.getValue();
             discardView.setText(viewText);
             deckView.setText(R.string.deck);
+            deckView.setBackgroundColor(ContextCompat.getColor(this, deck.getCardBackgrounds(c)));
             deckTaken = false;
             discardTaken = false;
-            toggleFocus(discardView, false);
-            toggleFocus(deckView, false);
+            //toggleFocus(discardView, false);
+            //toggleFocus(deckView, false);
             switchPlayer();
         }
     }
