@@ -13,6 +13,7 @@ public class Deck {
     private ArrayList<String> cardTypes = new ArrayList<>(
             Arrays.asList("Red", "Orange", "Yellow", "Green", "LightBlue", "Blue", "Navy", "Violet"));
     private HashMap<String, Integer> cardBackgrounds;
+    private HashMap<String, Integer> cardDrawables;
     private int capacity = 40;
     private String bonusType = "Bonus";
     private int bonusValue = 3;
@@ -21,6 +22,7 @@ public class Deck {
 
     public Deck() {
         initialiseBackgrounds();
+        initialiseDrawables();
         build();
         shuffle();
     }
@@ -86,8 +88,24 @@ public class Deck {
         cardBackgrounds.put("Violet", R.color.colorViolet);
     }
 
+    public void initialiseDrawables() {
+        cardDrawables = new HashMap<>();
+        cardDrawables.put("Red", R.drawable.card_border_red);
+        cardDrawables.put("Orange", R.drawable.card_border_orange);
+        cardDrawables.put("Yellow", R.drawable.card_border_yellow);
+        cardDrawables.put("Green", R.drawable.card_border_green);
+        cardDrawables.put("LightBlue", R.drawable.card_border_light_blue);
+        cardDrawables.put("Blue", R.drawable.card_border_blue);
+        cardDrawables.put("Navy", R.drawable.card_border_navy);
+        cardDrawables.put("Violet", R.drawable.card_border_violet);
+    }
+
     public Integer getCardBackgrounds(Card c) {
         return cardBackgrounds.get(c.getType());
     }
 
+    public Integer getCardDrawables(Card c) {
+        return cardDrawables.get(c.getType());
+    }
+    
 }

@@ -12,4 +12,6 @@
     <color name="colorBlue">#50B4D8</color>
     <color name="colorNavy">#445A67</color>
     <color name="colorViolet">#CBAACB</color>
+    <color name="colorDark">#1A1A1A</color>
+    <color name="colorLight">#EFEFEF</color>
 </resources>
