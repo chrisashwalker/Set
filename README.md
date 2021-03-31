@@ -1,4 +1,4 @@
-# Menu
-My first mini Android card game build. \
+# Set
+My first mini Android card game. \
 Written in Java 10/2020 \
-Works fine but the UI needs improvement.
+(and all over again in 03/2021!) \
