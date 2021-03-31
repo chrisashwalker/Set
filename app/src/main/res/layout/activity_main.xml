@@ -5,7 +5,7 @@
     android:id="@+id/startLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="playGame"
+    android:onClick="launchGame"
     tools:context=".MainActivity">
 
     <TextView
