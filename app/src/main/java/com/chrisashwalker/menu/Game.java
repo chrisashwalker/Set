@@ -2,7 +2,9 @@ package com.chrisashwalker.menu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -31,6 +33,13 @@ public class Game extends AppCompatActivity {
 
     private boolean deckTaken;
     private boolean discardTaken;
+
+    private ProgressBar timer;
+    private Handler handler;
+    private Runnable runnable;
+    private Runnable ticker;
+    int timeLimit = 3000;
+    int tickFrequency = 1000;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,12 @@ public class Game extends AppCompatActivity {
     }
 
     private void startNew() {
+        handler = new Handler();
+        runnable = new Runnable(){
+            public void run() {
+                timeLimitReached();
+            }
+        };
         Player.resetNextId();
         Card.resetNextId();
         deck = new Deck();
@@ -54,6 +69,7 @@ public class Game extends AppCompatActivity {
     }
 
     private void findViews() {
+        timer = findViewById(R.id.timer);
         gameLayout = findViewById(R.id.gameLayout);
         deckView = findViewById(R.id.deckView);
         discardView = findViewById(R.id.discardView);
@@ -166,6 +182,8 @@ public class Game extends AppCompatActivity {
     }
 
     private void switchPlayer() {
+        handler.removeCallbacks(runnable);
+        handler.removeCallbacks(ticker);
         int nextPlayer = players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0;
         activePlayer = players.get(nextPlayer);
         updateViews(activePlayer);
@@ -173,7 +191,31 @@ public class Game extends AppCompatActivity {
             autoPlay();
         } else {
             findMissingCardTypes(activePlayer);
+            startTimer();
         }
+    }
+
+    private void startTimer() {
+        timer.setProgress(100);
+        createTicker();
+        handler.postDelayed(runnable, timeLimit);
+    }
+
+    private void createTicker() {
+        ticker = new Runnable(){
+            public void run() {
+                timer.setProgress(timer.getProgress() - 100/(timeLimit/tickFrequency));
+                createTicker();
+            }
+        };
+        handler.postDelayed(ticker, tickFrequency);
+    }
+
+    private void timeLimitReached() {
+        if (activePlayer.getCards().size() > activePlayer.getHand().getCapacity()) {
+            discard(activePlayer.getCards().get(activePlayer.getCards().size() - 1));
+        }
+        switchPlayer();
     }
 
     public void takeDeck(View view) {
@@ -186,7 +228,7 @@ public class Game extends AppCompatActivity {
                 deckTaken = true;
                 activePlayer.getHand().addCard(deck.getCards().pollFirst());
                 if (view != null) {
-                    String viewText = topCard.getType() + "\n" + topCard.getValue();
+                    String viewText = "Deck:\n" + topCard.getValue();
                     ((TextView) view).setText(viewText);
                     ((TextView) view).setTextColor(getResources().getColor(R.color.colorDark));
                     toggleFocus(view, true, topCard);
@@ -220,7 +262,7 @@ public class Game extends AppCompatActivity {
             }
             activePlayer.getHand().removeCard(c);
             discards.offerFirst(c);
-            String viewText = c.getType() + "\n" + c.getValue();
+            String viewText = "Discard:\n" + c.getValue();
             discardView.setText(viewText);
             discardView.setTextColor(getResources().getColor(R.color.colorDark));
             deckView.setText(R.string.deck);
