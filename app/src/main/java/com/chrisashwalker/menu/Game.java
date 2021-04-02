@@ -28,6 +28,7 @@ public class Game extends AppCompatActivity {
     private TextView finishView;
     private TextView scoreView;
     private TextView highScoreView;
+    private TextView activePlayerView;
     private HashMap<Integer, ArrayList<TextView>> playerViewLists;
     private HashMap<Integer, TextView> playerBonusViews;
 
@@ -40,15 +41,22 @@ public class Game extends AppCompatActivity {
     private Runnable ticker;
     int timeLimit = 3000;
     int tickFrequency = 1000;
+    boolean timed;
+    Intent gameIntent;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        gameIntent = getIntent();
         startNew();
     }
 
-    private void startNew() {
+    public void startNew() {
+        timed = gameIntent.getBooleanExtra("Timed",false);
+        int humanPlayerCount = gameIntent.getIntExtra("Humans",1);
+        int cpuPlayerCount = gameIntent.getIntExtra("Robots",1);
+        int cardCount = gameIntent.getIntExtra("Cards",42);
         handler = new Handler();
         runnable = new Runnable(){
             public void run() {
@@ -57,10 +65,8 @@ public class Game extends AppCompatActivity {
         };
         Player.resetNextId();
         Card.resetNextId();
-        deck = new Deck();
+        deck = new Deck(cardCount);
         discards = new ArrayDeque<>();
-        int humanPlayerCount = 1;
-        int cpuPlayerCount = 1;
         players = Player.assemble(deck,humanPlayerCount,cpuPlayerCount);
         activePlayer = players.get(0);
         findViews();
@@ -76,6 +82,7 @@ public class Game extends AppCompatActivity {
         finishView = findViewById(R.id.finishView);
         scoreView = findViewById(R.id.score);
         highScoreView = findViewById(R.id.highScore);
+        activePlayerView = findViewById(R.id.playerView);
         playerViewLists = new HashMap<>();
         playerBonusViews = new HashMap<>();
         for (Player p : players) {
@@ -84,12 +91,12 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    private void updateViews(Player p) {
+    private void updateViews(Player p) { //TODO: Reconsider use of IDs and tags
         ArrayList<TextView> viewList = playerViewLists.get(p.getId());
         assert viewList != null;
         if (viewList.isEmpty()) {
             for (int i = 0; i < gameLayout.getChildCount(); i++) {
-                if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(getString(R.string.card))) {
+                if (gameLayout.getChildAt(i).getResources().getResourceName(gameLayout.getChildAt(i).getId()).contains("card") && !gameLayout.getChildAt(i).getResources().getResourceName(gameLayout.getChildAt(i).getId()).contains("discard")) {
                     viewList.add((TextView) gameLayout.getChildAt(i));
                 }
             }
@@ -106,6 +113,7 @@ public class Game extends AppCompatActivity {
         scoreView.setText(scoreText);
         String highScoreText = getString(R.string.highScore) + Player.getHighScore();
         highScoreView.setText(highScoreText);
+        activePlayerView.setText("P" + activePlayer.getId());
     }
 
     private void updateBonusViews(Player p) {
@@ -114,13 +122,15 @@ public class Game extends AppCompatActivity {
             for (int i = 0; i < gameLayout.getChildCount(); i++) {
                 if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(getString(R.string.bonuses))) {
                     view = (TextView) gameLayout.getChildAt(i);
+                    gameLayout.getChildAt(i).setTag(p);
+                    playerBonusViews.put(p.getId(), view);
                     break;
                 }
             }
         }
         if (p.getHand().hasBonuses() && view != null) {
             view.setVisibility(View.VISIBLE);
-            String bonusText = R.string.bonuses + ": " + p.getHand().getBonusScore();
+            String bonusText = "P" + p.getId() + " bonus pts: " + p.getHand().getBonusScore();
             view.setText(bonusText);
         }
     }
@@ -196,9 +206,12 @@ public class Game extends AppCompatActivity {
     }
 
     private void startTimer() {
-        timer.setProgress(100);
-        createTicker();
-        handler.postDelayed(runnable, timeLimit);
+        if (timed) {
+            timer.setVisibility(View.VISIBLE);
+            timer.setProgress(100);
+            createTicker();
+            handler.postDelayed(runnable, timeLimit);
+        }
     }
 
     private void createTicker() {
@@ -224,6 +237,11 @@ public class Game extends AppCompatActivity {
             if (topCard.getType().equals(deck.getBonusType())) {
                 activePlayer.getHand().addBonus(deck.getCards().pollFirst());
                 updateBonusViews(activePlayer);
+                if (activePlayer.checkIsHuman()) {
+                    handler.removeCallbacks(runnable);
+                    handler.removeCallbacks(ticker);
+                    startTimer();
+                }
             } else {
                 deckTaken = true;
                 activePlayer.getHand().addCard(deck.getCards().pollFirst());
@@ -334,6 +352,11 @@ public class Game extends AppCompatActivity {
     public void launchMainMenu(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    public void replay(View view) {
+        setContentView(R.layout.activity_play);
+        startNew();
     }
 
 }

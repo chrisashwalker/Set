@@ -10,4 +10,6 @@
     <string name="opponentCard">opponentCard\n</string>
     <string name="score">Score:\n</string>
     <string name="highScore">High Score:\n</string>
+    <string name="standardGame">Standard (no time limits)</string>
+    <string name="timedGame">Timed</string>
 </resources>

@@ -8,6 +8,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    static boolean timed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,8 +17,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchGame(View view) {
-        Intent intent = new Intent(this, Game.class);
+        Intent intent = new Intent(this, Options.class);
+        intent.putExtra("Timed", timed);
         startActivity(intent);
+    }
+
+    public void launchTimedGame(View view) {
+        timed = true;
+        launchGame(view);
     }
 
 }
