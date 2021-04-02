@@ -14,13 +14,14 @@ public class Deck {
             Arrays.asList("Red", "Orange", "Yellow", "Green", "LightBlue", "Blue", "Navy", "Violet"));
     private HashMap<String, Integer> cardBackgrounds;
     private HashMap<String, Integer> cardDrawables;
-    private int capacity = 40;
+    private int capacity;
     private String bonusType = "Bonus";
     private int bonusValue = 3;
-    private int bonusCount = capacity % cardTypes.size();
-    private int countOfEachType = (capacity - bonusCount) / cardTypes.size();
+    private int bonusCount;
+    private int countOfEachType;
 
-    public Deck() {
+    public Deck(int capacity) {
+        setCapacity(capacity);
         initialiseBackgrounds();
         initialiseDrawables();
         build();
@@ -106,6 +107,12 @@ public class Deck {
 
     public Integer getCardDrawables(Card c) {
         return cardDrawables.get(c.getType());
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+        bonusCount = capacity % cardTypes.size();
+        countOfEachType = (capacity - bonusCount) / cardTypes.size();
     }
     
 }

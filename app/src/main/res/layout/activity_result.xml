@@ -101,7 +101,6 @@
         android:id="@+id/resultView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="launchMainMenu"
         android:tag="@string/result"
         android:text="@string/result"
         android:textAlignment="center"
@@ -341,5 +340,27 @@
         app:layout_constraintEnd_toEndOf="@id/opponentCard8"
         app:layout_constraintStart_toStartOf="@id/opponentCard8"
         app:layout_constraintTop_toBottomOf="@id/opponentCard8" />
+
+    <Button
+        android:id="@+id/againButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="replay"
+        android:text="Play Again"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/card8"
+        app:layout_constraintStart_toStartOf="@+id/card8"
+        app:layout_constraintTop_toBottomOf="@+id/card8" />
+
+    <Button
+        android:id="@+id/menuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="launchMainMenu"
+        android:text="Main Menu"
+        app:layout_constraintBottom_toTopOf="@+id/opponentCard1"
+        app:layout_constraintEnd_toEndOf="@+id/opponentCard1"
+        app:layout_constraintStart_toStartOf="@+id/opponentCard1"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

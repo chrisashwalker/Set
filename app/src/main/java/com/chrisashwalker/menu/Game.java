@@ -2,7 +2,9 @@ package com.chrisashwalker.menu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,26 +28,45 @@ public class Game extends AppCompatActivity {
     private TextView finishView;
     private TextView scoreView;
     private TextView highScoreView;
+    private TextView activePlayerView;
     private HashMap<Integer, ArrayList<TextView>> playerViewLists;
     private HashMap<Integer, TextView> playerBonusViews;
 
     private boolean deckTaken;
     private boolean discardTaken;
+
+    private ProgressBar timer;
+    private Handler handler;
+    private Runnable runnable;
+    private Runnable ticker;
+    int timeLimit = 3000;
+    int tickFrequency = 1000;
+    boolean timed;
+    Intent gameIntent;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        gameIntent = getIntent();
         startNew();
     }
 
-    private void startNew() {
+    public void startNew() {
+        timed = gameIntent.getBooleanExtra("Timed",false);
+        int humanPlayerCount = gameIntent.getIntExtra("Humans",1);
+        int cpuPlayerCount = gameIntent.getIntExtra("Robots",1);
+        int cardCount = gameIntent.getIntExtra("Cards",42);
+        handler = new Handler();
+        runnable = new Runnable(){
+            public void run() {
+                timeLimitReached();
+            }
+        };
         Player.resetNextId();
         Card.resetNextId();
-        deck = new Deck();
+        deck = new Deck(cardCount);
         discards = new ArrayDeque<>();
-        int humanPlayerCount = 1;
-        int cpuPlayerCount = 1;
         players = Player.assemble(deck,humanPlayerCount,cpuPlayerCount);
         activePlayer = players.get(0);
         findViews();
@@ -54,12 +75,14 @@ public class Game extends AppCompatActivity {
     }
 
     private void findViews() {
+        timer = findViewById(R.id.timer);
         gameLayout = findViewById(R.id.gameLayout);
         deckView = findViewById(R.id.deckView);
         discardView = findViewById(R.id.discardView);
         finishView = findViewById(R.id.finishView);
         scoreView = findViewById(R.id.score);
         highScoreView = findViewById(R.id.highScore);
+        activePlayerView = findViewById(R.id.playerView);
         playerViewLists = new HashMap<>();
         playerBonusViews = new HashMap<>();
         for (Player p : players) {
@@ -68,12 +91,12 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    private void updateViews(Player p) {
+    private void updateViews(Player p) { //TODO: Reconsider use of IDs and tags
         ArrayList<TextView> viewList = playerViewLists.get(p.getId());
         assert viewList != null;
         if (viewList.isEmpty()) {
             for (int i = 0; i < gameLayout.getChildCount(); i++) {
-                if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(getString(R.string.card))) {
+                if (gameLayout.getChildAt(i).getResources().getResourceName(gameLayout.getChildAt(i).getId()).contains("card") && !gameLayout.getChildAt(i).getResources().getResourceName(gameLayout.getChildAt(i).getId()).contains("discard")) {
                     viewList.add((TextView) gameLayout.getChildAt(i));
                 }
             }
@@ -90,6 +113,7 @@ public class Game extends AppCompatActivity {
         scoreView.setText(scoreText);
         String highScoreText = getString(R.string.highScore) + Player.getHighScore();
         highScoreView.setText(highScoreText);
+        activePlayerView.setText("P" + activePlayer.getId());
     }
 
     private void updateBonusViews(Player p) {
@@ -98,13 +122,15 @@ public class Game extends AppCompatActivity {
             for (int i = 0; i < gameLayout.getChildCount(); i++) {
                 if (gameLayout.getChildAt(i).getTag() != null && gameLayout.getChildAt(i).getTag().equals(getString(R.string.bonuses))) {
                     view = (TextView) gameLayout.getChildAt(i);
+                    gameLayout.getChildAt(i).setTag(p);
+                    playerBonusViews.put(p.getId(), view);
                     break;
                 }
             }
         }
         if (p.getHand().hasBonuses() && view != null) {
             view.setVisibility(View.VISIBLE);
-            String bonusText = R.string.bonuses + ": " + p.getHand().getBonusScore();
+            String bonusText = "P" + p.getId() + " bonus pts: " + p.getHand().getBonusScore();
             view.setText(bonusText);
         }
     }
@@ -166,6 +192,8 @@ public class Game extends AppCompatActivity {
     }
 
     private void switchPlayer() {
+        handler.removeCallbacks(runnable);
+        handler.removeCallbacks(ticker);
         int nextPlayer = players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0;
         activePlayer = players.get(nextPlayer);
         updateViews(activePlayer);
@@ -173,7 +201,34 @@ public class Game extends AppCompatActivity {
             autoPlay();
         } else {
             findMissingCardTypes(activePlayer);
+            startTimer();
         }
+    }
+
+    private void startTimer() {
+        if (timed) {
+            timer.setVisibility(View.VISIBLE);
+            timer.setProgress(100);
+            createTicker();
+            handler.postDelayed(runnable, timeLimit);
+        }
+    }
+
+    private void createTicker() {
+        ticker = new Runnable(){
+            public void run() {
+                timer.setProgress(timer.getProgress() - 100/(timeLimit/tickFrequency));
+                createTicker();
+            }
+        };
+        handler.postDelayed(ticker, tickFrequency);
+    }
+
+    private void timeLimitReached() {
+        if (activePlayer.getCards().size() > activePlayer.getHand().getCapacity()) {
+            discard(activePlayer.getCards().get(activePlayer.getCards().size() - 1));
+        }
+        switchPlayer();
     }
 
     public void takeDeck(View view) {
@@ -182,11 +237,16 @@ public class Game extends AppCompatActivity {
             if (topCard.getType().equals(deck.getBonusType())) {
                 activePlayer.getHand().addBonus(deck.getCards().pollFirst());
                 updateBonusViews(activePlayer);
+                if (activePlayer.checkIsHuman()) {
+                    handler.removeCallbacks(runnable);
+                    handler.removeCallbacks(ticker);
+                    startTimer();
+                }
             } else {
                 deckTaken = true;
                 activePlayer.getHand().addCard(deck.getCards().pollFirst());
                 if (view != null) {
-                    String viewText = topCard.getType() + "\n" + topCard.getValue();
+                    String viewText = "Deck:\n" + topCard.getValue();
                     ((TextView) view).setText(viewText);
                     ((TextView) view).setTextColor(getResources().getColor(R.color.colorDark));
                     toggleFocus(view, true, topCard);
@@ -220,7 +280,7 @@ public class Game extends AppCompatActivity {
             }
             activePlayer.getHand().removeCard(c);
             discards.offerFirst(c);
-            String viewText = c.getType() + "\n" + c.getValue();
+            String viewText = "Discard:\n" + c.getValue();
             discardView.setText(viewText);
             discardView.setTextColor(getResources().getColor(R.color.colorDark));
             deckView.setText(R.string.deck);
@@ -292,6 +352,11 @@ public class Game extends AppCompatActivity {
     public void launchMainMenu(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    public void replay(View view) {
+        setContentView(R.layout.activity_play);
+        startNew();
     }
 
 }
