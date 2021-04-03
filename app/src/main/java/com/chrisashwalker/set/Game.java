@@ -1,4 +1,4 @@
-package com.chrisashwalker.menu;
+package com.chrisashwalker.set;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,22 +41,22 @@ public class Game extends AppCompatActivity {
     private Runnable ticker;
     int timeLimit = 3000;
     int tickFrequency = 1000;
-    boolean timed;
-    Intent gameIntent;
+    boolean timedGame;
+    Intent gameOptionsIntent;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        gameIntent = getIntent();
+        gameOptionsIntent = getIntent();
         startNew();
     }
 
     public void startNew() {
-        timed = gameIntent.getBooleanExtra("Timed",false);
-        int humanPlayerCount = gameIntent.getIntExtra("Humans",1);
-        int cpuPlayerCount = gameIntent.getIntExtra("Robots",1);
-        int cardCount = gameIntent.getIntExtra("Cards",42);
+        timedGame = gameOptionsIntent.getBooleanExtra("timedGame",false);
+        int humanPlayerCount = gameOptionsIntent.getIntExtra("humans",1);
+        int cpuPlayerCount = gameOptionsIntent.getIntExtra("robots",1);
+        int cardCount = gameOptionsIntent.getIntExtra("cards",42);
         handler = new Handler();
         runnable = new Runnable(){
             public void run() {
@@ -206,7 +206,7 @@ public class Game extends AppCompatActivity {
     }
 
     private void startTimer() {
-        if (timed) {
+        if (timedGame) {
             timer.setVisibility(View.VISIBLE);
             timer.setProgress(100);
             createTicker();
@@ -241,6 +241,8 @@ public class Game extends AppCompatActivity {
                     handler.removeCallbacks(runnable);
                     handler.removeCallbacks(ticker);
                     startTimer();
+                } else {
+                    takeDeck(view);
                 }
             } else {
                 deckTaken = true;
@@ -295,12 +297,15 @@ public class Game extends AppCompatActivity {
 
     private void autoPlay() {
         ArrayList<String> missingTypes = findMissingCardTypes(activePlayer);
-        if (missingTypes.isEmpty() && activePlayer.getGoal() >= activePlayer.getHand().getTotalScore()) {
+        if (missingTypes.isEmpty() && (activePlayer.getGoal() <= activePlayer.getHand().getTotalScore())) {
             finishGame(finishView);
         } else {
+            if (missingTypes.isEmpty()) {
+                activePlayer.setGoal(activePlayer.getGoal() - 1);
+            }
             Card discard = discards.peekFirst() instanceof Card ? discards.peekFirst() : null;
             if (discard != null) {
-                if (missingTypes.contains(discard.getType())) {
+                if (missingTypes.contains(discard.getType()) || discard.getValue() > activePlayer.getHand().findLowestValueCard().getValue()) {
                     takeDiscard(discardView);
                 } else {
                     takeDeck(deckView);

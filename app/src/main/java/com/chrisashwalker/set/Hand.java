@@ -1,4 +1,4 @@
-package com.chrisashwalker.menu;
+package com.chrisashwalker.set;
 
 import java.util.ArrayList;
 
@@ -49,7 +49,7 @@ public class Hand {
         Card lowestValueCard = null;
         ArrayList<String> duplicateTypes = findDuplicateCardTypes(cards);
         for (Card c : cards) {
-            if (duplicateTypes.contains(c.getType()) && (lowestValueCard == null || lowestValueCard.getValue() > c.getValue())) {
+            if (lowestValueCard == null || lowestValueCard.getValue() > c.getValue() && (duplicateTypes.contains(c.getType()) || duplicateTypes.isEmpty())) {
                 lowestValueCard = c;
             }
         }
@@ -58,6 +58,17 @@ public class Hand {
 
     public Card findLowestValueCard() {
         return findLowestValueCard(getCards());
+    }
+
+    public static Card findLowestDuplicateCard(ArrayList<Card> cards) {
+        Card lowestValueCard = null;
+        ArrayList<String> duplicateTypes = findDuplicateCardTypes(cards);
+        for (Card c : cards) {
+            if ((lowestValueCard == null || lowestValueCard.getValue() > c.getValue()) && (duplicateTypes.contains(c.getType()))) {
+                lowestValueCard = c;
+            }
+        }
+        return lowestValueCard;
     }
 
     public boolean hasBonuses() {
@@ -79,8 +90,8 @@ public class Hand {
     public int getTotalScore() {
         int score = 0;
         ArrayList<Card> scoringCards = new ArrayList<>(getCards());
-        while (findLowestValueCard(scoringCards) != null) {
-            scoringCards.remove(findLowestValueCard(scoringCards));
+        while (findLowestDuplicateCard(scoringCards) != null) {
+            scoringCards.remove(findLowestDuplicateCard(scoringCards));
         }
         for (Card c : scoringCards) {
             score += c.getValue();

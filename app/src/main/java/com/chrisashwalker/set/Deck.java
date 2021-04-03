@@ -1,4 +1,4 @@
-package com.chrisashwalker.menu;
+package com.chrisashwalker.set;
 
 import java.util.Arrays;
 import java.util.Collections;

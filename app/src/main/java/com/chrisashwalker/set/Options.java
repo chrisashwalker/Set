@@ -1,4 +1,4 @@
-package com.chrisashwalker.menu;
+package com.chrisashwalker.set;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,19 +9,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Options extends AppCompatActivity {
 
-    static boolean timed;
+    static boolean timedGame;
     static int humans = 1;
     static int robots = 1;
     static int cards = 42;
-    Intent gameIntent;
+    static Intent gameOptionsIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
-        Intent intent = getIntent();
-        timed = intent.getBooleanExtra("Timed",false);
-        gameIntent = new Intent(this, Game.class);
+        Intent gameModeIntent = getIntent();
+        timedGame = gameModeIntent.getBooleanExtra("timedGame",false);
+        gameOptionsIntent = new Intent(this, Game.class);
     }
 
     public void startGame(View view) { //TODO: Needs error handling!
@@ -41,11 +41,11 @@ public class Options extends AppCompatActivity {
     }
 
     public void startDefaultGame(View view) {
-        gameIntent.putExtra("Timed", timed);
-        gameIntent.putExtra("Humans",humans);
-        gameIntent.putExtra("Robots",robots);
-        gameIntent.putExtra("Cards",cards);
-        startActivity(gameIntent);
+        gameOptionsIntent.putExtra("timedGame", timedGame);
+        gameOptionsIntent.putExtra("humans",humans);
+        gameOptionsIntent.putExtra("robots",robots);
+        gameOptionsIntent.putExtra("cards",cards);
+        startActivity(gameOptionsIntent);
     }
 
 }

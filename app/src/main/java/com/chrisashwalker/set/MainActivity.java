@@ -1,4 +1,4 @@
-package com.chrisashwalker.menu;
+package com.chrisashwalker.set;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    static boolean timed;
+    static boolean timedGame;
+    static Intent gameModeIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,13 +18,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchGame(View view) {
-        Intent intent = new Intent(this, Options.class);
-        intent.putExtra("Timed", timed);
-        startActivity(intent);
+        gameModeIntent = new Intent(this, Options.class);
+        gameModeIntent.putExtra("timedGame", timedGame);
+        startActivity(gameModeIntent);
     }
 
     public void launchTimedGame(View view) {
-        timed = true;
+        timedGame = true;
         launchGame(view);
     }
 
