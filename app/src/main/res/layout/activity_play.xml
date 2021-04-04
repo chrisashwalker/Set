@@ -297,4 +297,17 @@
         app:layout_constraintStart_toStartOf="@+id/score"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/winStreak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="useWinStreakPower"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:text="Win Streak"
+        app:layout_constraintBottom_toTopOf="@+id/score"
+        app:layout_constraintEnd_toEndOf="@+id/highScore"
+        app:layout_constraintStart_toStartOf="@+id/highScore"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

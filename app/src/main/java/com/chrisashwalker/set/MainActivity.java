@@ -15,10 +15,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        timedGame = false;
+        gameModeIntent = new Intent(this, Options.class);
     }
 
     public void launchGame(View view) {
-        gameModeIntent = new Intent(this, Options.class);
         gameModeIntent.putExtra("timedGame", timedGame);
         startActivity(gameModeIntent);
     }

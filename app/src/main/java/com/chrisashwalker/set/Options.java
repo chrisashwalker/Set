@@ -21,6 +21,9 @@ public class Options extends AppCompatActivity {
         setContentView(R.layout.activity_options);
         Intent gameModeIntent = getIntent();
         timedGame = gameModeIntent.getBooleanExtra("timedGame",false);
+        humans = 1;
+        robots = 1;
+        cards = 42;
         gameOptionsIntent = new Intent(this, Game.class);
     }
 

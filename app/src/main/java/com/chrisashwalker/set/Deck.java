@@ -53,6 +53,15 @@ public class Deck {
         cards.offerLast(c);
     }
 
+    public void absorbHand (Hand hand) {
+        for (Card c : hand.getCards()) {
+            addCard(c);
+        }
+        for (Card c : hand.getBonuses()) {
+            addCard(c);
+        }
+    }
+
     public ArrayList<String> getCardTypes() {
         return cardTypes;
     }

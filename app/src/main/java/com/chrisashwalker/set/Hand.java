@@ -20,6 +20,10 @@ public class Hand {
         return cards;
     }
 
+    public ArrayList<Card> getBonuses() {
+        return bonuses;
+    }
+
     public void addCard(Card card) {
         cards.add(card);
     }
@@ -79,6 +83,10 @@ public class Hand {
         bonuses.add(bonus);
     }
 
+    public void removeBonus(Card bonus) {
+        bonuses.remove(bonus);
+    }
+
     public int getBonusScore() {
         int bonusScore = 0;
         for (Card b : bonuses) {
@@ -99,7 +107,7 @@ public class Hand {
         return score + getBonusScore();
     }
 
-    private void deal(Deck deck) {
+    public void deal(Deck deck) {
         cards = new ArrayList<>();
         bonuses = new ArrayList<>();
         while (cards.size() < this.capacity) {

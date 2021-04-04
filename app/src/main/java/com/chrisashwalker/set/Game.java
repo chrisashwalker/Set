@@ -43,12 +43,18 @@ public class Game extends AppCompatActivity {
     int tickFrequency = 1000;
     boolean timedGame;
     Intent gameOptionsIntent;
+
+    private TextView winStreakView;
+    private HashMap<Integer, Integer> playerWinStreak;
+    private int powerUpCost = 3;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         gameOptionsIntent = getIntent();
+        playerWinStreak = new HashMap<>();
+        playerWinStreak.clear();
         startNew();
     }
 
@@ -85,9 +91,13 @@ public class Game extends AppCompatActivity {
         activePlayerView = findViewById(R.id.playerView);
         playerViewLists = new HashMap<>();
         playerBonusViews = new HashMap<>();
+        winStreakView = findViewById(R.id.winStreak);
         for (Player p : players) {
             playerViewLists.put(p.getId(), new ArrayList<TextView>());
             playerBonusViews.put(p.getId(), null);
+            if (!playerWinStreak.containsKey(p.getId())) {
+                playerWinStreak.put(p.getId(), 3);
+            }
         }
     }
 
@@ -114,6 +124,12 @@ public class Game extends AppCompatActivity {
         String highScoreText = getString(R.string.highScore) + Player.getHighScore();
         highScoreView.setText(highScoreText);
         activePlayerView.setText("P" + activePlayer.getId());
+        winStreakView.setText("Win Streak: " + playerWinStreak.get(p.getId()));
+        if (playerWinStreak.get(p.getId()) >= 3) {
+            winStreakView.setBackgroundResource(R.drawable.card_border);
+        } else {
+            winStreakView.setBackgroundResource(0);
+        }
     }
 
     private void updateBonusViews(Player p) {
@@ -320,6 +336,16 @@ public class Game extends AppCompatActivity {
         }
     }
 
+    public void useWinStreakPower(View view) {
+        if (playerWinStreak.get(activePlayer.getId()) >= powerUpCost) {
+            playerWinStreak.put(activePlayer.getId(), playerWinStreak.get(activePlayer.getId()) - powerUpCost);
+            winStreakView.setText("Win Streak: " + playerWinStreak.get(activePlayer.getId()));
+            Player target = players.get(players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0);
+            deck.absorbHand(target.getHand());
+            target.getHand().deal(deck);
+        }
+    }
+
     public void finishGame(View view) {
         String result;
         StringBuilder equalScorers = new StringBuilder();
@@ -351,6 +377,13 @@ public class Game extends AppCompatActivity {
         resultView.setText(result);
         if (highestScorers.get(0).checkIsHuman() && highestScorers.get(0).getHand().getTotalScore() > Player.getHighScore()) {
             Player.setHighScore(highestScorers.get(0).getHand().getTotalScore());
+        }
+        for (Player p: players) {
+            if (highestScorers.contains(p)) {
+                playerWinStreak.put(p.getId(), playerWinStreak.get(p.getId()) + 1);
+            } else {
+                playerWinStreak.put(p.getId(), 0);
+            }
         }
     }
 
