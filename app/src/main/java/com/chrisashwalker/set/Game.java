@@ -75,6 +75,7 @@ public class Game extends AppCompatActivity {
         discards = new ArrayDeque<>();
         players = Player.assemble(deck,humanPlayerCount,cpuPlayerCount);
         activePlayer = players.get(0);
+        activePlayer.getHand().sort();
         findViews();
         updateViews(activePlayer);
         findMissingCardTypes(activePlayer);
@@ -96,7 +97,7 @@ public class Game extends AppCompatActivity {
             playerViewLists.put(p.getId(), new ArrayList<TextView>());
             playerBonusViews.put(p.getId(), null);
             if (!playerWinStreak.containsKey(p.getId())) {
-                playerWinStreak.put(p.getId(), 3);
+                playerWinStreak.put(p.getId(), 0);
             }
         }
     }
@@ -212,6 +213,7 @@ public class Game extends AppCompatActivity {
         handler.removeCallbacks(ticker);
         int nextPlayer = players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0;
         activePlayer = players.get(nextPlayer);
+        activePlayer.getHand().sort();
         updateViews(activePlayer);
         if (!activePlayer.checkIsHuman()) {
             autoPlay();
@@ -354,6 +356,7 @@ public class Game extends AppCompatActivity {
         setContentView(R.layout.activity_result);
         resultLayout = findViewById(R.id.resultLayout);
         for (Player p : players) {
+            p.getHand().sort();
             playerViewLists.put(p.getId(), new ArrayList<TextView>());
             playerBonusViews.put(p.getId(), null);
             updateResultViews(p);

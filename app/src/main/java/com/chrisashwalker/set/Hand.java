@@ -1,6 +1,7 @@
 package com.chrisashwalker.set;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class Hand {
 
@@ -127,4 +128,11 @@ public class Hand {
         }
     }
 
+    public void sort() {
+        TreeMap<Integer, Card> sortIndexes = new TreeMap<>();
+        for (Card c : cards) {
+            sortIndexes.put(c.getId(), c);
+        }
+        cards = new ArrayList<>(sortIndexes.values());
+    }
 }

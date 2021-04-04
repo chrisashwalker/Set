@@ -30,9 +30,9 @@ public class Deck {
 
     private void build() {
         allPossibleCards = new ArrayList<>();
-        for (int i = 1; i <= countOfEachType; i++) {
-            for (int j = 0; j <= cardTypes.size() - 1; j++) {
-                allPossibleCards.add(new Card(cardTypes.get(j), i));
+        for (int i = 0; i <= cardTypes.size() - 1; i++) {
+            for (int j = 1; j <= countOfEachType; j++) {
+                allPossibleCards.add(new Card(cardTypes.get(i), j));
             }
         }
         while (allPossibleCards.size() < this.capacity) {
