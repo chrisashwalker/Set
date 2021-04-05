@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchGame(View view) {
-        gameModeIntent.putExtra("timedGame", timedGame);
+        gameModeIntent.putExtra(String.valueOf(R.string.timed_game), timedGame);
         startActivity(gameModeIntent);
     }
 

@@ -15,56 +15,54 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game extends AppCompatActivity {
-    
+
+    private Intent gameOptionsIntent;
+    private ArrayList<Player> players;
+    private HashMap<Integer, Integer> playerWinStreak;
+    private Player activePlayer;
     private Deck deck;
     private ArrayDeque<Card> discards;
-    private ArrayList<Player> players;
-    private Player activePlayer;
-
-    private ConstraintLayout gameLayout;
-    private ConstraintLayout resultLayout;
-    private TextView deckView;
-    private TextView discardView;
-    private TextView finishView;
-    private TextView scoreView;
-    private TextView highScoreView;
-    private TextView activePlayerView;
-    private HashMap<Integer, ArrayList<TextView>> playerViewLists;
-    private HashMap<Integer, TextView> playerBonusViews;
-
     private boolean deckTaken;
     private boolean discardTaken;
 
-    private ProgressBar timer;
     private Handler handler;
-    private Runnable runnable;
-    private Runnable ticker;
-    int timeLimit = 3000;
-    int tickFrequency = 1000;
-    boolean timedGame;
-    Intent gameOptionsIntent;
+    private boolean timedGame;
+    private ProgressBar turnTimer;
+    private Runnable turnTicker;
+    private Runnable secondTicker;
+    private int turnTimeLimit;
+    private int second;
+    private int powerUpCost;
 
+    private ConstraintLayout gameLayout;
+    private ConstraintLayout resultLayout;
+    private TextView activePlayerView;
     private TextView winStreakView;
-    private HashMap<Integer, Integer> playerWinStreak;
-    private int powerUpCost = 3;
-    
+    private TextView scoreView;
+    private TextView highScoreView;
+    private TextView deckView;
+    private TextView discardView;
+    private TextView finishView;
+    private HashMap<Integer, ArrayList<TextView>> playerViewLists;
+    private HashMap<Integer, TextView> playerBonusViews;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         gameOptionsIntent = getIntent();
         playerWinStreak = new HashMap<>();
-        playerWinStreak.clear();
         startNew();
     }
 
     public void startNew() {
-        timedGame = gameOptionsIntent.getBooleanExtra("timedGame",false);
-        int humanPlayerCount = gameOptionsIntent.getIntExtra("humans",1);
-        int cpuPlayerCount = gameOptionsIntent.getIntExtra("robots",1);
-        int cardCount = gameOptionsIntent.getIntExtra("cards",42);
+        setTimers();
+        timedGame = gameOptionsIntent.getBooleanExtra(String.valueOf(R.string.timed_game),false);
+        int humanPlayerCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_human_players),1);
+        int cpuPlayerCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_robot_players),1);
+        int cardCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_cards),42);
         handler = new Handler();
-        runnable = new Runnable(){
+        turnTicker = new Runnable(){
             public void run() {
                 timeLimitReached();
             }
@@ -81,8 +79,14 @@ public class Game extends AppCompatActivity {
         findMissingCardTypes(activePlayer);
     }
 
+    private void setTimers() {
+        turnTimeLimit = 3000;
+        second = 1000;
+        powerUpCost = 3;
+    }
+
     private void findViews() {
-        timer = findViewById(R.id.timer);
+        turnTimer = findViewById(R.id.timer);
         gameLayout = findViewById(R.id.gameLayout);
         deckView = findViewById(R.id.deckView);
         discardView = findViewById(R.id.discardView);
@@ -102,7 +106,7 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    private void updateViews(Player p) { //TODO: Reconsider use of IDs and tags
+    private void updateViews(Player p) { //TODO: Reconsider use of IDs and tags.
         ArrayList<TextView> viewList = playerViewLists.get(p.getId());
         assert viewList != null;
         if (viewList.isEmpty()) {
@@ -122,11 +126,15 @@ public class Game extends AppCompatActivity {
         updateBonusViews(p);
         String scoreText = getString(R.string.score) + p.getHand().getTotalScore();
         scoreView.setText(scoreText);
-        String highScoreText = getString(R.string.highScore) + Player.getHighScore();
+        String highScoreText = getString(R.string.high_score) + Player.getHighScore();
         highScoreView.setText(highScoreText);
-        activePlayerView.setText("P" + activePlayer.getId());
-        winStreakView.setText("Win Streak: " + playerWinStreak.get(p.getId()));
-        if (playerWinStreak.get(p.getId()) >= 3) {
+        String activePlayerText = getString(R.string.player) + activePlayer.getId();
+        activePlayerView.setText(activePlayerText);
+        Integer winStreakInteger = playerWinStreak.get(p.getId());
+        int winStreak = winStreakInteger != null ? winStreakInteger : 0;
+        String winStreakText = getString(R.string.win_streak) + winStreak;
+        winStreakView.setText(winStreakText);
+        if (winStreak >= 3) {
             winStreakView.setBackgroundResource(R.drawable.card_border);
         } else {
             winStreakView.setBackgroundResource(0);
@@ -147,7 +155,7 @@ public class Game extends AppCompatActivity {
         }
         if (p.getHand().hasBonuses() && view != null) {
             view.setVisibility(View.VISIBLE);
-            String bonusText = "P" + p.getId() + " bonus pts: " + p.getHand().getBonusScore();
+            String bonusText = getString(R.string.player) + p.getId() + " bonus pts: " + p.getHand().getBonusScore();
             view.setText(bonusText);
         }
     }
@@ -157,7 +165,7 @@ public class Game extends AppCompatActivity {
         if (p.equals(players.get(0))) {
             cardTag = getString(R.string.card);
         } else if (p.equals(players.get(1))) {
-            cardTag = getString(R.string.opponentCard);
+            cardTag = getString(R.string.opponent_card);
         } else {
             return;
         }
@@ -209,8 +217,8 @@ public class Game extends AppCompatActivity {
     }
 
     private void switchPlayer() {
-        handler.removeCallbacks(runnable);
-        handler.removeCallbacks(ticker);
+        handler.removeCallbacks(turnTicker);
+        handler.removeCallbacks(secondTicker);
         int nextPlayer = players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0;
         activePlayer = players.get(nextPlayer);
         activePlayer.getHand().sort();
@@ -225,21 +233,21 @@ public class Game extends AppCompatActivity {
 
     private void startTimer() {
         if (timedGame) {
-            timer.setVisibility(View.VISIBLE);
-            timer.setProgress(100);
+            turnTimer.setVisibility(View.VISIBLE);
+            turnTimer.setProgress(100);
             createTicker();
-            handler.postDelayed(runnable, timeLimit);
+            handler.postDelayed(turnTicker, turnTimeLimit);
         }
     }
 
     private void createTicker() {
-        ticker = new Runnable(){
+        secondTicker = new Runnable(){
             public void run() {
-                timer.setProgress(timer.getProgress() - 100/(timeLimit/tickFrequency));
+                turnTimer.setProgress(turnTimer.getProgress() - 100/(turnTimeLimit / second));
                 createTicker();
             }
         };
-        handler.postDelayed(ticker, tickFrequency);
+        handler.postDelayed(secondTicker, second);
     }
 
     private void timeLimitReached() {
@@ -256,8 +264,8 @@ public class Game extends AppCompatActivity {
                 activePlayer.getHand().addBonus(deck.getCards().pollFirst());
                 updateBonusViews(activePlayer);
                 if (activePlayer.checkIsHuman()) {
-                    handler.removeCallbacks(runnable);
-                    handler.removeCallbacks(ticker);
+                    handler.removeCallbacks(turnTicker);
+                    handler.removeCallbacks(secondTicker);
                     startTimer();
                 } else {
                     takeDeck(view);
@@ -266,7 +274,7 @@ public class Game extends AppCompatActivity {
                 deckTaken = true;
                 activePlayer.getHand().addCard(deck.getCards().pollFirst());
                 if (view != null) {
-                    String viewText = "Deck:\n" + topCard.getValue();
+                    String viewText = getString(R.string.deck) + topCard.getValue();
                     ((TextView) view).setText(viewText);
                     ((TextView) view).setTextColor(getResources().getColor(R.color.colorDark));
                     toggleFocus(view, true, topCard);
@@ -300,7 +308,7 @@ public class Game extends AppCompatActivity {
             }
             activePlayer.getHand().removeCard(c);
             discards.offerFirst(c);
-            String viewText = "Discard:\n" + c.getValue();
+            String viewText = getString(R.string.discards) + c.getValue();
             discardView.setText(viewText);
             discardView.setTextColor(getResources().getColor(R.color.colorDark));
             deckView.setText(R.string.deck);
@@ -339,16 +347,18 @@ public class Game extends AppCompatActivity {
     }
 
     public void useWinStreakPower(View view) {
-        if (playerWinStreak.get(activePlayer.getId()) >= powerUpCost) {
-            playerWinStreak.put(activePlayer.getId(), playerWinStreak.get(activePlayer.getId()) - powerUpCost);
-            winStreakView.setText("Win Streak: " + playerWinStreak.get(activePlayer.getId()));
+        Integer winStreakInteger = playerWinStreak.get(activePlayer.getId());
+        int winStreak = winStreakInteger != null ? winStreakInteger : 0;
+        if (winStreak >= powerUpCost) {
+            playerWinStreak.put(activePlayer.getId(), winStreak - powerUpCost);
+            winStreakView.setText(R.string.win_streak + winStreak);
             Player target = players.get(players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0);
             deck.absorbHand(target.getHand());
             target.getHand().deal(deck);
         }
     }
 
-    public void finishGame(View view) {
+    public void finishGame(View view) { //TODO: Reconsider string building for the result.
         String result;
         StringBuilder equalScorers = new StringBuilder();
         StringBuilder scores = new StringBuilder();
@@ -364,17 +374,17 @@ public class Game extends AppCompatActivity {
                 highestScorers.clear();
                 highestScorers.add(p);
                 equalScorers.delete(0, equalScorers.length());
-                equalScorers.append("P").append(p.getId());
+                equalScorers.append(getString(R.string.player)).append(p.getId());
             } else if (p.getHand().getTotalScore() == highestScorers.get(0).getHand().getTotalScore()) {
                 highestScorers.add(p);
-                equalScorers.append(" & P").append(p.getId());
+                equalScorers.append(" & ").append(getString(R.string.player)).append(p.getId());
             }
-            scores.append("P").append(p.getId()).append(":").append(p.getHand().getTotalScore()).append("; ");
+            scores.append(getString(R.string.player)).append(p.getId()).append(":").append(p.getHand().getTotalScore()).append("; ");
         }
         if (highestScorers.size() > 1) {
             result = "Draw! " + equalScorers + " scored " + highestScorers.get(0).getHand().getTotalScore() + ".";
         } else {
-            result = "P" + highestScorers.get(0).getId() + " wins with " + highestScorers.get(0).getHand().getTotalScore() + " points!";
+            result = getString(R.string.player) + highestScorers.get(0).getId() + " wins with " + highestScorers.get(0).getHand().getTotalScore() + " points!";
         }
         TextView resultView = findViewById(R.id.resultView);
         resultView.setText(result);
@@ -383,7 +393,9 @@ public class Game extends AppCompatActivity {
         }
         for (Player p: players) {
             if (highestScorers.contains(p)) {
-                playerWinStreak.put(p.getId(), playerWinStreak.get(p.getId()) + 1);
+                Integer winStreakInteger = playerWinStreak.get(p.getId());
+                int winStreak = winStreakInteger != null ? winStreakInteger : 0;
+                playerWinStreak.put(p.getId(), winStreak + 1);
             } else {
                 playerWinStreak.put(p.getId(), 0);
             }

@@ -20,7 +20,7 @@ public class Options extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
         Intent gameModeIntent = getIntent();
-        timedGame = gameModeIntent.getBooleanExtra("timedGame",false);
+        timedGame = gameModeIntent.getBooleanExtra(String.valueOf(R.string.timed_game),false);
         setDefaults();
         gameOptionsIntent = new Intent(this, Game.class);
     }
@@ -32,10 +32,10 @@ public class Options extends AppCompatActivity {
     }
 
     public void startGame(View view) {
-        gameOptionsIntent.putExtra("timedGame", timedGame);
-        gameOptionsIntent.putExtra("humans",humans);
-        gameOptionsIntent.putExtra("robots",robots);
-        gameOptionsIntent.putExtra("cards",cards);
+        gameOptionsIntent.putExtra(String.valueOf(R.string.timed_game), timedGame);
+        gameOptionsIntent.putExtra(String.valueOf(R.string.no_of_human_players),humans);
+        gameOptionsIntent.putExtra(String.valueOf(R.string.no_of_robot_players),robots);
+        gameOptionsIntent.putExtra(String.valueOf(R.string.no_of_cards),cards);
         startActivity(gameOptionsIntent);
     }
 
