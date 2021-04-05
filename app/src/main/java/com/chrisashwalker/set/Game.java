@@ -55,18 +55,19 @@ public class Game extends AppCompatActivity {
         startNew();
     }
 
-    public void startNew() {
-        setTimers();
+    private void startNew() {
         timedGame = gameOptionsIntent.getBooleanExtra(String.valueOf(R.string.timed_game),false);
         int humanPlayerCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_human_players),1);
         int cpuPlayerCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_robot_players),1);
         int cardCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_cards),42);
         handler = new Handler();
+        setTimers();
         turnTicker = new Runnable(){
             public void run() {
                 timeLimitReached();
             }
         };
+        powerUpCost = 3;
         Player.resetNextId();
         Card.resetNextId();
         deck = new Deck(cardCount);
@@ -77,12 +78,40 @@ public class Game extends AppCompatActivity {
         findViews();
         updateViews(activePlayer);
         findMissingCardTypes(activePlayer);
+        if (!activePlayer.checkIsHuman()) {
+            autoPlay();
+        }
     }
 
     private void setTimers() {
-        turnTimeLimit = 3000;
         second = 1000;
-        powerUpCost = 3;
+        turnTimeLimit = 3 * second;
+    }
+
+    private void createTicker() {
+        secondTicker = new Runnable(){
+            public void run() {
+                turnTimer.setProgress(turnTimer.getProgress() - 100/(turnTimeLimit / second));
+                createTicker();
+            }
+        };
+        handler.postDelayed(secondTicker, second);
+    }
+
+    private void startTimer() {
+        if (timedGame) {
+            turnTimer.setVisibility(View.VISIBLE);
+            turnTimer.setProgress(100);
+            createTicker();
+            handler.postDelayed(turnTicker, turnTimeLimit);
+        }
+    }
+
+    private void timeLimitReached() {
+        if (activePlayer.getCards().size() > activePlayer.getHand().getCapacity()) {
+            discard(activePlayer.getCards().get(activePlayer.getCards().size() - 1));
+        }
+        switchPlayer();
     }
 
     private void findViews() {
@@ -231,32 +260,6 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    private void startTimer() {
-        if (timedGame) {
-            turnTimer.setVisibility(View.VISIBLE);
-            turnTimer.setProgress(100);
-            createTicker();
-            handler.postDelayed(turnTicker, turnTimeLimit);
-        }
-    }
-
-    private void createTicker() {
-        secondTicker = new Runnable(){
-            public void run() {
-                turnTimer.setProgress(turnTimer.getProgress() - 100/(turnTimeLimit / second));
-                createTicker();
-            }
-        };
-        handler.postDelayed(secondTicker, second);
-    }
-
-    private void timeLimitReached() {
-        if (activePlayer.getCards().size() > activePlayer.getHand().getCapacity()) {
-            discard(activePlayer.getCards().get(activePlayer.getCards().size() - 1));
-        }
-        switchPlayer();
-    }
-
     public void takeDeck(View view) {
         Card topCard = deck.getCards().peekFirst() instanceof Card ? deck.getCards().peekFirst() : null;
         if (topCard != null && !deckTaken && !discardTaken && activePlayer.getCards().size() == activePlayer.getHand().getCapacity()) {
@@ -359,6 +362,8 @@ public class Game extends AppCompatActivity {
     }
 
     public void finishGame(View view) { //TODO: Reconsider string building for the result.
+        handler.removeCallbacks(turnTicker);
+        handler.removeCallbacks(secondTicker);
         String result;
         StringBuilder equalScorers = new StringBuilder();
         StringBuilder scores = new StringBuilder();
@@ -402,14 +407,14 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    public void launchMainMenu(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     public void replay(View view) {
         setContentView(R.layout.activity_play);
         startNew();
+    }
+
+    public void launchMainMenu(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
 }
