@@ -9,6 +9,29 @@
     tools:context=".Game">
 
     <TextView
+        android:id="@+id/playerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/active_player"
+        app:layout_constraintBottom_toTopOf="@+id/score"
+        app:layout_constraintEnd_toEndOf="@+id/score"
+        app:layout_constraintStart_toStartOf="@+id/score"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/winStreak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="useWinStreakPower"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:text="@string/win_streak"
+        app:layout_constraintBottom_toTopOf="@+id/score"
+        app:layout_constraintEnd_toEndOf="@+id/highScore"
+        app:layout_constraintStart_toStartOf="@+id/highScore"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/score"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -286,28 +309,5 @@
         app:layout_constraintEnd_toStartOf="@+id/deckView"
         app:layout_constraintStart_toEndOf="@+id/discardView"
         app:layout_constraintTop_toTopOf="@+id/discardView" />
-
-    <TextView
-        android:id="@+id/playerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Active Player"
-        app:layout_constraintBottom_toTopOf="@+id/score"
-        app:layout_constraintEnd_toEndOf="@+id/score"
-        app:layout_constraintStart_toStartOf="@+id/score"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/winStreak"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="useWinStreakPower"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:text="Win Streak"
-        app:layout_constraintBottom_toTopOf="@+id/score"
-        app:layout_constraintEnd_toEndOf="@+id/highScore"
-        app:layout_constraintStart_toStartOf="@+id/highScore"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

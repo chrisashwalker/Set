@@ -8,24 +8,71 @@ import java.util.HashMap;
 
 public class Deck {
 
+    private int capacity;
+    private ArrayList<String> cardTypes;
+    private int countOfEachType;
+
+    private String bonusType;
+    private int bonusValue;
+    private int bonusCount;
+
     private ArrayList<Card> allPossibleCards;
     private ArrayDeque<Card> cards;
-    private ArrayList<String> cardTypes = new ArrayList<>(
-            Arrays.asList("Red", "Orange", "Yellow", "Green", "LightBlue", "Blue", "Navy", "Violet"));
+
     private HashMap<String, Integer> cardBackgrounds;
     private HashMap<String, Integer> cardDrawables;
-    private int capacity;
-    private String bonusType = "Bonus";
-    private int bonusValue = 3;
-    private int bonusCount;
-    private int countOfEachType;
 
     public Deck(int capacity) {
         setCapacity(capacity);
+        setCardTypes(new String[] {"Red", "Orange", "Yellow", "Green", "LightBlue", "Blue", "Navy", "Violet"});
+        setBonusType();
+        setBonusValue();
         initialiseBackgrounds();
         initialiseDrawables();
         build();
         shuffle();
+    }
+
+    private void setCapacity(int capacity) {
+        this.capacity = capacity;
+        bonusCount = capacity % cardTypes.size();
+        countOfEachType = (capacity - bonusCount) / cardTypes.size();
+    }
+
+    private void setCardTypes(String[] arr) {
+        cardTypes = new ArrayList<>(Arrays.asList(arr));
+    }
+
+    private void setBonusType() {
+        bonusType = "Bonus";
+    }
+
+    private void setBonusValue() {
+        bonusValue = 3;
+    }
+
+    private void initialiseBackgrounds() {
+        cardBackgrounds = new HashMap<>();
+        cardBackgrounds.put("Red", R.color.colorRed);
+        cardBackgrounds.put("Orange", R.color.colorOrange);
+        cardBackgrounds.put("Yellow", R.color.colorYellow);
+        cardBackgrounds.put("Green", R.color.colorGreen);
+        cardBackgrounds.put("LightBlue", R.color.colorLightBlue);
+        cardBackgrounds.put("Blue", R.color.colorBlue);
+        cardBackgrounds.put("Navy", R.color.colorNavy);
+        cardBackgrounds.put("Violet", R.color.colorViolet);
+    }
+
+    private void initialiseDrawables() {
+        cardDrawables = new HashMap<>();
+        cardDrawables.put("Red", R.drawable.card_border_red);
+        cardDrawables.put("Orange", R.drawable.card_border_orange);
+        cardDrawables.put("Yellow", R.drawable.card_border_yellow);
+        cardDrawables.put("Green", R.drawable.card_border_green);
+        cardDrawables.put("LightBlue", R.drawable.card_border_light_blue);
+        cardDrawables.put("Blue", R.drawable.card_border_blue);
+        cardDrawables.put("Navy", R.drawable.card_border_navy);
+        cardDrawables.put("Violet", R.drawable.card_border_violet);
     }
 
     private void build() {
@@ -45,8 +92,40 @@ public class Deck {
         cards = new ArrayDeque<>(allPossibleCards);
     }
 
+    public ArrayList<String> getCardTypes() {
+        return cardTypes;
+    }
+
+    private int getCountOfEachType() {
+        return countOfEachType;
+    }
+
+    public String getBonusType() {
+        return bonusType;
+    }
+
+    private int getBonusValue() {
+        return bonusValue;
+    }
+
+    private int getBonusCount() {
+        return bonusCount;
+    }
+
+    public Integer getCardBackgrounds(Card c) {
+        return cardBackgrounds.get(c.getType());
+    }
+
+    public Integer getCardDrawables(Card c) {
+        return cardDrawables.get(c.getType());
+    }
+
     public ArrayDeque<Card> getCards() {
         return cards;
+    }
+
+    public int getHighestPossibleScore() {
+        return getCardTypes().size() * getCountOfEachType() + (getBonusCount() * getBonusValue());
     }
 
     public void addCard(Card c) {
@@ -60,68 +139,6 @@ public class Deck {
         for (Card c : hand.getBonuses()) {
             addCard(c);
         }
-    }
-
-    public ArrayList<String> getCardTypes() {
-        return cardTypes;
-    }
-
-    public int getBonusCount() {
-        return bonusCount;
-    }
-
-    public int getCountOfEachType() {
-        return countOfEachType;
-    }
-
-    public String getBonusType() {
-        return bonusType;
-    }
-
-    public int getHighestPossibleScore() {
-        return getCardTypes().size() * getCountOfEachType() + (getBonusCount() * getBonusValue());
-    }
-
-    public int getBonusValue() {
-        return bonusValue;
-    }
-
-    public void initialiseBackgrounds() {
-        cardBackgrounds = new HashMap<>();
-        cardBackgrounds.put("Red", R.color.colorRed);
-        cardBackgrounds.put("Orange", R.color.colorOrange);
-        cardBackgrounds.put("Yellow", R.color.colorYellow);
-        cardBackgrounds.put("Green", R.color.colorGreen);
-        cardBackgrounds.put("LightBlue", R.color.colorLightBlue);
-        cardBackgrounds.put("Blue", R.color.colorBlue);
-        cardBackgrounds.put("Navy", R.color.colorNavy);
-        cardBackgrounds.put("Violet", R.color.colorViolet);
-    }
-
-    public void initialiseDrawables() {
-        cardDrawables = new HashMap<>();
-        cardDrawables.put("Red", R.drawable.card_border_red);
-        cardDrawables.put("Orange", R.drawable.card_border_orange);
-        cardDrawables.put("Yellow", R.drawable.card_border_yellow);
-        cardDrawables.put("Green", R.drawable.card_border_green);
-        cardDrawables.put("LightBlue", R.drawable.card_border_light_blue);
-        cardDrawables.put("Blue", R.drawable.card_border_blue);
-        cardDrawables.put("Navy", R.drawable.card_border_navy);
-        cardDrawables.put("Violet", R.drawable.card_border_violet);
-    }
-
-    public Integer getCardBackgrounds(Card c) {
-        return cardBackgrounds.get(c.getType());
-    }
-
-    public Integer getCardDrawables(Card c) {
-        return cardDrawables.get(c.getType());
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-        bonusCount = capacity % cardTypes.size();
-        countOfEachType = (capacity - bonusCount) / cardTypes.size();
     }
     
 }

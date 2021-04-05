@@ -8,8 +8,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    static boolean timedGame;
-    static Intent gameModeIntent;
+    private static boolean timedGame;
+    private static Intent gameModeIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

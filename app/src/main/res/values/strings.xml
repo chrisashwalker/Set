@@ -12,4 +12,11 @@
     <string name="highScore">High Score:\n</string>
     <string name="standardGame">Standard (no time limits)</string>
     <string name="timedGame">Timed</string>
+    <string name="play_with_default_options">Play with default options</string>
+    <string name="no_of_robot_players">No. of robot players</string>
+    <string name="no_of_human_players">No. of human players</string>
+    <string name="no_of_cards">No. of cards</string>
+    <string name="play">Play</string>
+    <string name="active_player">Active Player</string>
+    <string name="win_streak">Win Streak</string>
 </resources>

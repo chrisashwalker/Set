@@ -9,11 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Options extends AppCompatActivity {
 
-    static boolean timedGame;
-    static int humans = 1;
-    static int robots = 1;
-    static int cards = 42;
-    static Intent gameOptionsIntent;
+    private static boolean timedGame;
+    private static int humans;
+    private static int robots;
+    private static int cards;
+    private static Intent gameOptionsIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,34 +21,43 @@ public class Options extends AppCompatActivity {
         setContentView(R.layout.activity_options);
         Intent gameModeIntent = getIntent();
         timedGame = gameModeIntent.getBooleanExtra("timedGame",false);
-        humans = 1;
-        robots = 1;
-        cards = 42;
+        setDefaults();
         gameOptionsIntent = new Intent(this, Game.class);
     }
 
-    public void startGame(View view) { //TODO: Needs error handling!
-        EditText humanNumberEdit = findViewById(R.id.humanNumberEdit);
-        EditText robotNumberEdit = findViewById(R.id.robotNumberEdit);
-        EditText cardNumberEdit = findViewById(R.id.cardNumberEdit);
-        if (humanNumberEdit.getText().length() > 0) {
-            humans = Integer.parseInt(humanNumberEdit.getText().toString());
-        }
-        if (robotNumberEdit.getText().length() > 0) {
-            robots = Integer.parseInt(robotNumberEdit.getText().toString());
-        }
-        if (cardNumberEdit.getText().length() > 0) {
-            cards = Integer.parseInt(cardNumberEdit.getText().toString());
-        }
-        startDefaultGame(view);
+    private void setDefaults() {
+        humans = 1;
+        robots = 1;
+        cards = 42;
     }
 
-    public void startDefaultGame(View view) {
+    public void startGame(View view) {
         gameOptionsIntent.putExtra("timedGame", timedGame);
         gameOptionsIntent.putExtra("humans",humans);
         gameOptionsIntent.putExtra("robots",robots);
         gameOptionsIntent.putExtra("cards",cards);
         startActivity(gameOptionsIntent);
+    }
+
+    public void startGameWithOptionalChanges(View view) {
+        EditText humanNumberEdit = findViewById(R.id.humanNumberEdit);
+        EditText robotNumberEdit = findViewById(R.id.robotNumberEdit);
+        EditText cardNumberEdit = findViewById(R.id.cardNumberEdit);
+        try {
+            if (humanNumberEdit.getText().length() > 0) {
+                humans = Integer.parseInt(humanNumberEdit.getText().toString());
+            }
+            if (robotNumberEdit.getText().length() > 0) {
+                robots = Integer.parseInt(robotNumberEdit.getText().toString());
+            }
+            if (cardNumberEdit.getText().length() > 0) {
+                cards = Integer.parseInt(cardNumberEdit.getText().toString());
+            }
+        }
+        catch (Exception e){
+            setDefaults();
+        }
+        startGame(view);
     }
 
 }

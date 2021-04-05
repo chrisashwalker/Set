@@ -7,10 +7,10 @@ public class Player {
 
     private static int nextId = 1;
     private int id;
+    private Hand hand;
     private boolean isHuman;
     private int goal;
     private static int highScore;
-    private Hand hand;
 
     public Player(Deck deck) {
         this.id = nextId++;
@@ -23,6 +23,18 @@ public class Player {
 
     public int getId() {
         return id;
+    }
+
+    public Hand getHand() {
+        return hand;
+    }
+
+    private void setHand(Hand hand) {
+        this.hand = hand;
+    }
+
+    public ArrayList<Card> getCards() {
+        return getHand().getCards();
     }
 
     public boolean checkIsHuman() {
@@ -41,7 +53,7 @@ public class Player {
         this.goal = goal;
     }
 
-    public void setGoal(Deck deck) {
+    private void setGoal(Deck deck) {
         if (checkIsHuman()) {
             setGoal(getHighScore() + 1 <= deck.getHighestPossibleScore() ? getHighScore() + 1 : getHighScore());
         } else {
@@ -55,18 +67,6 @@ public class Player {
 
     public static void setHighScore(int score) {
         highScore = score;
-    }
-
-    public Hand getHand() {
-        return hand;
-    }
-
-    public void setHand(Hand hand) {
-        this.hand = hand;
-    }
-
-    public ArrayList<Card> getCards() {
-        return getHand().getCards();
     }
 
     public static ArrayList<Player> assemble(Deck deck, int humanPlayerCount, int cpuPlayerCount) {

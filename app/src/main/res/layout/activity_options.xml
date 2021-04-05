@@ -13,8 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorAccent"
-        android:onClick="startDefaultGame"
-        android:text="Play with default options"
+        android:onClick="startGame"
+        android:text="@string/play_with_default_options"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,36 +25,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="No. of robot players"
+        android:hint="@string/no_of_robot_players"
         android:inputType="number"
         app:layout_constraintBottom_toTopOf="@id/cardNumberEdit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/humanNumberEdit" />
+        app:layout_constraintTop_toBottomOf="@+id/humanNumberEdit"
+        android:autofillHints= ".AUTOFILL_HINT_NOT_APPLICABLE" />
 
     <EditText
         android:id="@+id/humanNumberEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="No. of human players"
+        android:hint="@string/no_of_human_players"
         android:inputType="number"
         app:layout_constraintBottom_toTopOf="@id/robotNumberEdit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints= ".AUTOFILL_HINT_NOT_APPLICABLE" />
 
     <EditText
         android:id="@+id/cardNumberEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="No. of cards"
+        android:hint="@string/no_of_cards"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/humanNumberEdit"
         app:layout_constraintStart_toStartOf="@+id/humanNumberEdit"
-        app:layout_constraintTop_toBottomOf="@+id/humanNumberEdit" />
+        app:layout_constraintTop_toBottomOf="@+id/humanNumberEdit"
+        android:autofillHints= ".AUTOFILL_HINT_NOT_APPLICABLE" />
 
     <Button
         android:id="@+id/playButton"
@@ -62,10 +65,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorBlue"
-        android:onClick="startGame"
-        android:text="Play"
+        android:onClick="startGameWithOptionalChanges"
+        android:text="@string/play"
         app:layout_constraintBottom_toTopOf="@+id/defaultButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardNumberEdit" />
+        app:layout_constraintTop_toBottomOf="@+id/cardNumberEdit"
+        android:autofillHints= ".AUTOFILL_HINT_NOT_APPLICABLE" />
 </androidx.constraintlayout.widget.ConstraintLayout>
