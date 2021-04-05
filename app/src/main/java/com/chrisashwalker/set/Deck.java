@@ -8,9 +8,9 @@ import java.util.HashMap;
 
 public class Deck {
 
-    private int capacity;
     private ArrayList<String> cardTypes;
     private int countOfEachType;
+    private int capacity;
 
     private String bonusType;
     private int bonusValue;
@@ -23,8 +23,8 @@ public class Deck {
     private HashMap<String, Integer> cardDrawables;
 
     public Deck(int capacity) {
-        setCapacity(capacity);
         setCardTypes(new String[] {"Red", "Orange", "Yellow", "Green", "LightBlue", "Blue", "Navy", "Violet"});
+        setCapacity(capacity);
         setBonusType();
         setBonusValue();
         initialiseBackgrounds();
