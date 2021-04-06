@@ -133,4 +133,20 @@ public class Hand {
         return lowestValueCard;
     }
 
+    public Card findHighestValueCardOfSameType(Card testCard) {
+        String searchType = testCard.getType();
+        Card resultCard = null;
+        for (Card c : cards) {
+            if (c.getType().equals(searchType) && (resultCard == null || resultCard.getValue() < c.getValue())) {
+                resultCard = c;
+            }
+        }
+        return resultCard;
+    }
+
+    public boolean isCardValuable(Card testCard) {
+        Card highestCardOfSameType = findHighestValueCardOfSameType(testCard);
+        return highestCardOfSameType == null || highestCardOfSameType.getValue() < testCard.getValue() || findLowestValueCard().getValue() < testCard.getValue();
+    }
+
 }

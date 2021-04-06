@@ -56,10 +56,10 @@ public class Game extends AppCompatActivity {
     }
 
     private void startNew() {
-        timedGame = gameOptionsIntent.getBooleanExtra(String.valueOf(R.string.timed_game),false);
-        int humanPlayerCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_human_players),1);
-        int cpuPlayerCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_robot_players),1);
-        int cardCount = gameOptionsIntent.getIntExtra(String.valueOf(R.string.no_of_cards),42);
+        timedGame = gameOptionsIntent.getBooleanExtra(getString(R.string.timed_game),false);
+        int humanPlayerCount = gameOptionsIntent.getIntExtra(getString(R.string.no_of_human_players),1);
+        int cpuPlayerCount = gameOptionsIntent.getIntExtra(getString(R.string.no_of_robot_players),1);
+        int cardCount = gameOptionsIntent.getIntExtra(getString(R.string.no_of_cards),42);
         handler = new Handler();
         setTimers();
         turnTicker = new Runnable(){
@@ -314,7 +314,7 @@ public class Game extends AppCompatActivity {
             String viewText = getString(R.string.discards) + c.getValue();
             discardView.setText(viewText);
             discardView.setTextColor(getResources().getColor(R.color.colorDark));
-            deckView.setText(R.string.deck);
+            deckView.setText(getString(R.string.deck));
             deckView.setTextColor(getResources().getColor(R.color.colorLight));
             deckTaken = false;
             discardTaken = false;
@@ -334,7 +334,7 @@ public class Game extends AppCompatActivity {
             }
             Card discard = discards.peekFirst() instanceof Card ? discards.peekFirst() : null;
             if (discard != null) {
-                if (missingTypes.contains(discard.getType()) || discard.getValue() > activePlayer.getHand().findLowestValueCard().getValue()) {
+                if (activePlayer.getHand().isCardValuable(discard)) {
                     takeDiscard(discardView);
                 } else {
                     takeDeck(deckView);
@@ -354,7 +354,8 @@ public class Game extends AppCompatActivity {
         int winStreak = winStreakInteger != null ? winStreakInteger : 0;
         if (winStreak >= powerUpCost) {
             playerWinStreak.put(activePlayer.getId(), winStreak - powerUpCost);
-            winStreakView.setText(R.string.win_streak + winStreak);
+            String winStreakText = getString(R.string.win_streak) + (winStreak - powerUpCost);
+            winStreakView.setText(winStreakText);
             Player target = players.get(players.indexOf(activePlayer) + 1 <= players.size() - 1 ? players.indexOf(activePlayer) + 1 : 0);
             deck.absorbHand(target.getHand());
             target.getHand().deal(deck);
