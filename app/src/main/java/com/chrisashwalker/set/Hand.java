@@ -115,7 +115,7 @@ public class Hand {
         Card lowestValueCard = null;
         ArrayList<String> duplicateTypes = findDuplicateCardTypes(cards);
         for (Card c : cards) {
-            if (lowestValueCard == null || lowestValueCard.getValue() > c.getValue() && (duplicateTypes.contains(c.getType()) || duplicateTypes.isEmpty())) {
+            if (lowestValueCard == null || lowestValueCard.getValue() >= c.getValue() && (duplicateTypes.contains(c.getType()) || duplicateTypes.isEmpty())) {
                 lowestValueCard = c;
             }
         }

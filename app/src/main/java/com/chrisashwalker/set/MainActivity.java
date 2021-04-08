@@ -19,14 +19,19 @@ public class MainActivity extends AppCompatActivity {
         gameModeIntent = new Intent(this, Options.class);
     }
 
-    public void launchGame(View view) {
-        gameModeIntent.putExtra(String.valueOf(R.string.timed_game), timedGame);
+    public void launchGame() {
+        gameModeIntent.putExtra(getString(R.string.timed_game), timedGame);
         startActivity(gameModeIntent);
+    }
+
+    public void launchClassicGame(View view) {
+        timedGame = false;
+        launchGame();
     }
 
     public void launchTimedGame(View view) {
         timedGame = true;
-        launchGame(view);
+        launchGame();
     }
 
 }
