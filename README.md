@@ -1,4 +1,3 @@
 # Set
-My first mini Android card game. \
-Written in Java 10/2020 \
-(and all over again in 03/2021!)
+A little card game, running on Android. \
+One of my earliest programming efforts, back in Autumn 2020.
